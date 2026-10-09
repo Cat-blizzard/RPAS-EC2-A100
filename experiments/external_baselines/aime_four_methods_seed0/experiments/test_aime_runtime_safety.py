@@ -59,6 +59,12 @@ def test_run_session_profile_defaults_preserve_8k_fallback(monkeypatch):
     assert settings["max_num_batched_tokens"] == 16384
 
 
+def test_shared_aime_search_scorer_accepts_final_answer_format():
+    score, prediction = runner.aflow_aime_calculate_score(None, r"\boxed{073}", "FINAL ANSWER: 73")
+    assert score == 1
+    assert prediction == "73"
+
+
 def test_output_audit_counts_native_attribute_and_worker_failures_only(tmp_path: Path):
     failures = [
         "'Workflow' object has no attribute 'custom'",

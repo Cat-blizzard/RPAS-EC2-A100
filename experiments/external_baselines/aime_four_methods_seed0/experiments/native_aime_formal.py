@@ -1606,6 +1606,12 @@ def patch_maas_runtime(concurrency: int, max_tokens: int) -> dict[str, int]:
     from maas.provider.openai_api import OpenAILLM
     from maas_context_guard import PromptGuard
 
+    # MaAS's native MATH scorer extracts boxed/last-sentence answers and would
+    # score a correct AIME ``FINAL ANSWER: <integer>`` as wrong. Keep its
+    # controller/search loop and evaluator, but bind its fitness to the same
+    # frozen integer parser used by AFlow and the post-run shared metrics.
+    MATHBenchmark.calculate_score = aflow_aime_calculate_score
+
     usage = {
         "calls": 0,
         "prompt_tokens": 0,
