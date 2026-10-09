@@ -109,7 +109,7 @@ def _synthetic_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     }
     _write_json(run / "dtest_access_manifest.json", access)
     common = {
-        "protocol_version": gate.PROTOCOL_VERSION, "context_limit": 8192, "output_limit": 6144,
+        "protocol_version": gate.PROTOCOL_VERSION, "context_limit": 16384, "output_limit": 6144,
         "answer_protocol": gate.ANSWER_PARSER, "answer_protocol_sha256": gate.sha256_file(Path(gate.__file__).with_name("answer_protocol.py")),
         "frozen_data_manifest_sha256": manifest_hash, "data_sha256": hashes,
         "selection_lock_sha256": lock_hash, "dtest_access_manifest_sha256": gate.sha256_file(run / "dtest_access_manifest.json"),
@@ -133,7 +133,7 @@ def _synthetic_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         "controls": {
             "model": "Qwen/Qwen3.5-9B", "data_seed": 2026, "search_seed": 0, "search_size": 60,
             "selection_size": 30, "test_size_each": 30, "thinking": False, "temperature": 0.0, "top_p": 1.0,
-            "concurrency": 8, "max_num_seqs": 24, "max_model_len": 8192, "max_tokens": 6144, "tensor_parallel_size": 1,
+            "concurrency": 8, "max_num_seqs": 8, "max_model_len": 16384, "max_tokens": 6144, "tensor_parallel_size": 1,
             "gold_protocol": f"{gate.ANSWER_PARSER}; normalized integer exact match",
             "score_mapping": "2=exact match; 1=parseable wrong; 0=unparseable",
         },

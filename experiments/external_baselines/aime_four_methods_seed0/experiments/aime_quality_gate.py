@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 ANSWER_PARSER = "answer_protocol_v4.extract_aime_answer"
-PROTOCOL_VERSION = "aime_main_protocol_v6_canonical_frozen_data"
+PROTOCOL_VERSION = "aime_main_protocol_v8_16k_shared_task_input"
 FROZEN_AIME_MANIFEST_SHA256 = "7e6501210c7689e1702e9786a9652222c5ca33193d11d4cde531ea84bdee2cfe"
 MAX_SAMPLE_FAILURE_RATE = 0.05
 UPSTREAMS = {
@@ -140,7 +140,7 @@ def main() -> int:
                 errors.append(f"D_test question overlap/duplicate audit failed: {filename}")
             seen_question_hashes.update(question_hashes)
 
-    if manifest.get("context_limit") != 8192 or split.get("context_limit") != 8192:
+    if manifest.get("context_limit") != 16384 or split.get("context_limit") != 16384:
         errors.append("manifest context limit is not 8192")
     if manifest.get("output_limit") != 6144 or split.get("output_limit") != 6144:
         errors.append("manifest output limit is not 6144")
@@ -260,8 +260,8 @@ def main() -> int:
             errors.append(f"controls.{key}={controls.get(key)!r} != {expected!r}")
     if controls.get("thinking") is not False or controls.get("temperature") != 0.0 or controls.get("top_p") != 1.0:
         errors.append("decoding controls are not deterministic/no-thinking")
-    for key, expected in (("concurrency", 8), ("max_num_seqs", 24),
-                          ("max_model_len", 8192), ("max_tokens", 6144),
+    for key, expected in (("concurrency", 8), ("max_num_seqs", 8),
+                          ("max_model_len", 16384), ("max_tokens", 6144),
                           ("tensor_parallel_size", 1)):
         if controls.get(key) != expected:
             errors.append(f"controls.{key}={controls.get(key)!r} != protocol value {expected!r}")

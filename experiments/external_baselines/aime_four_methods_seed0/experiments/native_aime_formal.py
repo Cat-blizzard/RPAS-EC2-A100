@@ -35,10 +35,10 @@ from typing import Any
 
 
 MODEL = "Qwen/Qwen3.5-9B"
-CONTEXT_LIMIT = 8192
+CONTEXT_LIMIT = 16384
 OUTPUT_LIMIT = 6144
-PROTOCOL_VERSION = "aime_main_protocol_v6_canonical_frozen_data"
-EXTERNAL_AIME_PROTOCOL_VERSION = "aime_external_methods_v3_canonical_frozen_data"
+PROTOCOL_VERSION = "aime_main_protocol_v8_16k_shared_task_input"
+EXTERNAL_AIME_PROTOCOL_VERSION = "aime_external_methods_v5_16k_shared_task_input"
 ANSWER_PARSER = "answer_protocol_v4.extract_aime_answer"
 MAX_SAMPLE_FAILURE_RATE = 0.05
 FROZEN_AIME_MANIFEST = "frozen_aime_manifest.json"
@@ -53,9 +53,13 @@ UPSTREAMS = {
         "commit": "987f3c1bc9a96e844fe090db3791446e3ef0f5c7",
     },
 }
+AIME_SHARED_INPUT_INSTRUCTION = (
+    "Solve this AIME problem. Give a concise derivation and put the integer "
+    "answer on the last line as FINAL ANSWER: <integer>."
+)
 AIME_TASK_CONTRACT = {
-    "version": "AIME_TASK_CONTRACT_v1",
-    "input": "problem statement only; gold answer and solution are not included in the prompt",
+    "version": "AIME_TASK_CONTRACT_v2_shared_input",
+    "input": "shared AIME instruction plus original problem statement; gold answer and solution excluded",
     "gold": "integer answer from the frozen AIME dataset",
     "scoring": f"{ANSWER_PARSER}; normalized integer exact match",
 }
@@ -67,6 +71,11 @@ BRIDGE_LOGS = (
     Path(__file__).resolve().parents[1] / "outputs" / "aime_tinker_9b_protocol_v2_main_bridge.jsonl",
     Path(__file__).resolve().parents[1] / "outputs" / "aime_tinker_9b_protocol_v2_bridge.jsonl",
 )
+
+
+def format_aime_task(problem: str) -> str:
+    """Identical AIME user-task input across ALL four benchmark adapters."""
+    return f"{AIME_SHARED_INPUT_INSTRUCTION}\n\n{problem}"
 
 
 def task_contract_manifest() -> dict[str, str]:
@@ -560,7 +569,7 @@ def native_math_rows(rows: list[dict[str, Any]], namespace: str = "validation") 
     # it is never added to the problem prompt.
     return [
         {
-            "problem": str(row["problem"]),
+            "problem": format_aime_task(str(row["problem"])),
             "solution": rf"\boxed{{{row['answer']}}}",
             "aime_id": canonical_aime_id(row, namespace),
             "answer": str(row["answer"]),
@@ -866,16 +875,21 @@ def audit_aflow_outputs(log_dir: Path) -> dict[str, Any]:
     for row in rows:
         prediction = str(row.get("prediction", "") or "").strip()
         lowered = prediction.lower()
-        # Native evaluators persist str(exc), which can omit the exception
-        # class entirely. Match the complete AttributeError shape so ordinary
-        # solution prose mentioning an error remains eligible for scoring.
+        # Native evaluators sometimes persist str(exc) without the exception
+        # class. Count complete error shapes, not ordinary explanatory prose.
         bare_attribute_error = re.fullmatch(
             r"(?:attributeerror:\s*)?'[\w.]+' object has no attribute '\w+'", lowered
+        ) is not None
+        bare_name_error = re.fullmatch(
+            r"(?:nameerror:\s*)?name '[^']+' is not defined", lowered
+        ) is not None
+        pydantic_validation_error = re.match(
+            r"^(?:error:\s*)?(?:\d+\s+)?validation error\b", lowered
         ) is not None
         if not prediction:
             empty += 1
             failure_rows.append("<empty prediction>")
-        elif bare_attribute_error or any(
+        elif bare_attribute_error or bare_name_error or pydantic_validation_error or any(
             lowered == marker or lowered.startswith(marker) for marker in marker_prefixes
         ):
             failure_rows.append(prediction[:160])
@@ -1437,6 +1451,14 @@ def run_aflow(args: argparse.Namespace, search_rows: list[dict[str, Any]], selec
                 }
                 selection_rows.append(row)
                 invalid_rounds.append(row)
+    # Persist ALL candidate-level D_select outcomes before any quality-gate
+    # exception. This is diagnostic only and never unlocks D_test.
+    dump_json(args.run_dir / "selection_audit.json", {
+        "schema": "aime_fourway_selection_audit_v1",
+        "method": "aflow", "split": "D_select", "dtest_opened": False,
+        "candidate_rows": selection_rows, "invalid_rounds": invalid_rounds,
+        "failure_limit": MAX_SAMPLE_FAILURE_RATE,
+    })
     valid_selection_rows = [row for row in selection_rows if row.get("status") == "evaluated"]
     if not valid_selection_rows:
         raise RuntimeError("AFlow generated no valid workflow candidates for selection")
@@ -1558,7 +1580,7 @@ def run_aflow(args: argparse.Namespace, search_rows: list[dict[str, Any]], selec
                 "thinking": False,
                 "concurrency": args.concurrency,
                 "max_model_len": CONTEXT_LIMIT,
-                "max_num_seqs": int(os.environ.get("AIME_MAX_NUM_SEQS", "24")),
+                "max_num_seqs": int(os.environ.get("AIME_MAX_NUM_SEQS", "8")),
                 "tensor_parallel_size": int(os.environ.get("AIME_TP_SIZE", "1")),
                 "sample_timeout_s": float(os.environ.get("AIME_AFLOW_SAMPLE_TIMEOUT_S", "1200")),
                 "request_timeout_s": float(os.environ.get("AIME_AFLOW_REQUEST_TIMEOUT_S", "600")),
@@ -1597,6 +1619,12 @@ def patch_maas_runtime(concurrency: int, max_tokens: int) -> dict[str, int]:
         "code_execution_timeouts": 0,
         "code_execution_errors": 0,
     }
+
+    # Fail closed on malformed ScEnsemble XML. No guessed candidate letters;
+    # a second native request is allowed only after schema parsing fails.
+    from maas.actions.action_node import ActionNode
+    from maas_xml_guard import install_scensemble_xml_guard
+    install_scensemble_xml_guard(ActionNode, usage, max_attempts=2)
 
     # Load the same local Qwen tokenizer used by the formal bridge.  The guard
     # counts the public output-policy suffix as well, so a request that passes
@@ -2043,6 +2071,17 @@ def run_maas(args: argparse.Namespace, search_rows: list[dict[str, Any]], select
         selection_audit = audit_aflow_outputs(maas_eval_dir)
         selection_usage = phase_snapshot(maas_usage, "select")
         selection_failure_fraction = float(selection_audit.get("failure_fraction", 1.0) or 0.0)
+        # Failures previously discarded this entire costly native select run.
+        # Keep its unchanged exact-match score, parser audit and cost on disk,
+        # while preserving the hard 5% gate and leaving D_test unopened.
+        dump_json(args.run_dir / "selection_audit.json", {
+            "schema": "aime_fourway_selection_audit_v1", "method": "maas",
+            "split": "D_select", "dtest_opened": False,
+            "controller_sha256": sha256_file(controller_path),
+            "selection_metrics": selection_metrics, "output_audit": selection_audit,
+            "resource_usage": selection_usage,
+            "failure_limit": MAX_SAMPLE_FAILURE_RATE,
+        })
         if (selection_metrics.get("num_examples") != len(select_rows)
                 or selection_failure_fraction > MAX_SAMPLE_FAILURE_RATE):
             raise RuntimeError(
@@ -2138,7 +2177,7 @@ def run_maas(args: argparse.Namespace, search_rows: list[dict[str, Any]], select
                 "thinking": False,
                 "concurrency": args.concurrency,
                 "max_model_len": CONTEXT_LIMIT,
-                "max_num_seqs": int(os.environ.get("AIME_MAX_NUM_SEQS", "24")),
+                "max_num_seqs": int(os.environ.get("AIME_MAX_NUM_SEQS", "8")),
                 "tensor_parallel_size": int(os.environ.get("AIME_TP_SIZE", "1")),
                 "sample_timeout_s": float(os.environ.get("AIME_MAAS_SAMPLE_TIMEOUT_S", "300")),
                 "request_timeout_s": int(os.environ.get("AIME_MAAS_REQUEST_TIMEOUT_S", "180")),

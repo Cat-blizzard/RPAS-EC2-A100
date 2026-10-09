@@ -88,8 +88,8 @@ def check_serve() -> dict[str, object]:
     check_tokenizer(model_path)
     text_config = config.get("text_config", {})
     max_positions = text_config.get("max_position_embeddings")
-    if not isinstance(max_positions, int) or max_positions < 8192:
-        fail(f"model config supports only {max_positions} positions, below required context 8192")
+    if not isinstance(max_positions, int) or max_positions < 16384:
+        fail(f"model config supports only {max_positions} positions, below required context 16384")
 
     vllm_bin = os.environ.get("RPAS_VLLM", "vllm")
     try:
@@ -111,7 +111,7 @@ def check_serve() -> dict[str, object]:
         **gpu,
         "model_path": str(model_path),
         "model_context_capacity": max_positions,
-        "required_context": 8192,
+        "required_context": 16384,
         "required_output": 6144,
         "required_dtype": "bfloat16",
         "vllm_bin": vllm_bin,

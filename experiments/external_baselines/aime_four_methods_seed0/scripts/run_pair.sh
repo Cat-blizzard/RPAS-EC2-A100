@@ -59,10 +59,10 @@ for method in "${METHODS[@]}"; do
 done
 [[ -n "$EMBEDDING" && -d "$EMBEDDING" ]] || { echo "Set AIME_MINILM_PATH to local all-MiniLM-L6-v2 weights for MaAS/G-Designer" >&2; exit 2; }
 
-CONTEXT=8192
+CONTEXT=16384
 OUTPUT=6144
 CONCURRENCY=8
-MAX_SEQS=24
+MAX_SEQS=8
 GPU_UTIL=0.92
 DATA_SEED=2026
 SEED=0

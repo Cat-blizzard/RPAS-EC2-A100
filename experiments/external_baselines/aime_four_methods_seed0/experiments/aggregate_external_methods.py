@@ -51,7 +51,7 @@ def _verify_aime_freeze(run_dir: Path, manifest: dict[str, Any], result: dict[st
         raise ValueError(f"{run_dir}: unpinned or inconsistent upstream provenance")
     lock_hash = _sha256_file(lock_path)
     if (lock.get("schema") != "aime_dtest_blind_selection_lock_v2"
-            or lock.get("protocol_version") != "aime_external_methods_v3_canonical_frozen_data"
+            or lock.get("protocol_version") != "aime_external_methods_v5_16k_shared_task_input"
             or lock.get("frozen_data_manifest_sha256") != FROZEN_AIME_MANIFEST_SHA256
             or manifest.get("frozen_data_manifest_sha256") != FROZEN_AIME_MANIFEST_SHA256
             or lock.get("method") != method
@@ -206,10 +206,10 @@ def load_run(run_dir: Path, method: str, dataset: str, seed: int,
     runner_path = Path(__file__).with_name("native_external_methods.py")
     if manifest.get("runner_sha256") != _sha256_file(runner_path):
         raise ValueError(f"{run_dir}: external-method runner differs from the hashed execution source")
-    expected_protocol = "aime_external_methods_v3_canonical_frozen_data" if dataset == "aime" else "masbench_external_five_axis_v1"
+    expected_protocol = "aime_external_methods_v5_16k_shared_task_input" if dataset == "aime" else "masbench_external_five_axis_v1"
     if (manifest.get("method") != method or manifest.get("dataset") != dataset
             or int(manifest.get("seed", -1)) != seed or manifest.get("protocol_version") != expected_protocol
-            or manifest.get("model") != MODEL or int(manifest.get("context_limit", -1)) != 8192
+            or manifest.get("model") != MODEL or int(manifest.get("context_limit", -1)) != 16384
             or int(manifest.get("output_limit", -1)) != 6144 or int(manifest.get("data_seed", -1)) != 2026
             or manifest.get("selection_split") != "D_select" or manifest.get("test_split") != "D_test"):
         raise ValueError(f"{run_dir}: method/model/seed/protocol controls do not match the frozen experiment")
@@ -286,7 +286,7 @@ def summarize(records: list[dict[str, Any]], method: str) -> dict[str, Any]:
     verified_runs = len({(record["dataset"], record["axis"], record["seed"]) for record in records})
     if verified_runs != 18:
         raise ValueError(f"expected all 18 method runs, found {verified_runs}")
-    return {"method": method, "model": MODEL, "context_limit": 8192, "output_limit": 6144,
+    return {"method": method, "model": MODEL, "context_limit": 16384, "output_limit": 6144,
         "data_seed": 2026, "search_seeds": [0, 1, 2], "expected_runs": 18,
         "verified_runs": verified_runs, "tables": summary_rows, "raw_runs": records}
 

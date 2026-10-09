@@ -101,7 +101,7 @@ record = {"started_at_utc": datetime.datetime.now(datetime.timezone.utc).isoform
           "settings": {name: os.environ.get(name, "") for name in names},
           "launcher_sha256": hashlib.sha256((root / "scripts/run_single48g_all.sh").read_bytes()).hexdigest(),
           "protocol": {"search_seed": 0, "data_seed": 2026, "D_search": 60, "D_select": 30,
-                       "D_test_each_year": 30, "context": 8192, "max_tokens": 6144, "concurrency": 8},
+                       "D_test_each_year": 30, "context": 16384, "max_tokens": 6144, "concurrency": 8},
           "note": "Each independent method runs in its own service session; failures do not stop other methods."}
 with path.open("x", encoding="utf-8") as stream:
     json.dump(record, stream, indent=2); stream.write("\n")

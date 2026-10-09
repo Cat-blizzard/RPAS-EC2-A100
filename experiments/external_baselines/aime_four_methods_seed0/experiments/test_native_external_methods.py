@@ -4,7 +4,7 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
-from native_aime_formal import namespace_aime_rows, validate_aime_partitions
+from native_aime_formal import namespace_aime_rows, validate_aime_partitions, native_math_rows, format_aime_task
 from native_external_methods import (
     MASBENCH_AXES,
     ModelRuntime,
@@ -23,6 +23,16 @@ from native_external_methods import (
 
 
 class NativeExternalAdapterTests(unittest.TestCase):
+    def test_aime_task_input_identical_for_all_four_methods(self):
+        from native_external_methods import task_text
+        row = {"id": "sample", "problem": "Find the value of 7 + 9.", "answer": "16"}
+        via_math = native_math_rows([row])[0]["problem"]
+        via_external = task_text("aime", row)
+        self.assertEqual(via_math, via_external)
+        self.assertEqual(via_math, format_aime_task(row["problem"]))
+        self.assertTrue(via_math.endswith(row["problem"]))
+        self.assertNotIn("\\boxed{16}", via_math)
+
     def test_aime_role_graph_maps_native_nine_edges_without_complete_graph_collapse(self):
         native_edges = [
             ("Mathematical Analyst", "Math Solver"),

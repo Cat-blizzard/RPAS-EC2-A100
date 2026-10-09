@@ -38,6 +38,31 @@ print(json.dumps(result))
     return json.loads(completed.stdout)
 
 
+def positive_int_env(name: str, default: int) -> int:
+    """Read a positive integer runtime setting, preserving the 8K fallback."""
+    raw = os.environ.get(name, str(default))
+    try:
+        value = int(raw)
+    except ValueError as exc:
+        raise ValueError(f"{name} must be a positive integer, got {raw!r}") from exc
+    if value <= 0:
+        raise ValueError(f"{name} must be a positive integer, got {value}")
+    return value
+
+
+def server_settings() -> dict[str, object]:
+    """Return the actual launcher settings, including the selected context profile."""
+    return {
+        "served_model_name": "Qwen/Qwen3.5-9B", "dtype": "bfloat16", "language_model_only": True,
+        "tensor_parallel_size": 1,
+        "max_model_len": positive_int_env("AIME_MAX_MODEL_LEN", 8192),
+        "max_num_seqs": positive_int_env("AIME_MAX_NUM_SEQS", 24),
+        "max_num_batched_tokens": positive_int_env("AIME_MAX_NUM_BATCHED_TOKENS", 16384),
+        "gpu_memory_utilization": 0.92,
+        "reasoning_parser": "qwen3", "enable_prefix_caching": True,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, required=True)
@@ -106,12 +131,7 @@ def main() -> None:
         "embedding_revision": os.environ.get("RPAS_MAAS_EMBEDDING_REVISION", "unspecified"),
         "model_verification_report": verification_path,
         "model_verification_report_sha256": sha256_file(Path(verification_path)) if verification_path else None,
-        "server_settings": {
-            "served_model_name": "Qwen/Qwen3.5-9B", "dtype": "bfloat16", "language_model_only": True,
-            "tensor_parallel_size": 1, "max_model_len": 8192, "max_num_seqs": 24,
-            "max_num_batched_tokens": 16384, "gpu_memory_utilization": 0.92,
-            "reasoning_parser": "qwen3", "enable_prefix_caching": True,
-        },
+        "server_settings": server_settings(),
         "python_paths": python_paths,
         "package_versions": {role: versions(path) for role, path in python_paths.items()},
         "pair": os.environ.get("AIME_PAIR", ""),

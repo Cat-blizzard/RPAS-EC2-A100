@@ -39,14 +39,14 @@ else:
     from masbench_answer_protocol import score_masbench
 
 MODEL = "Qwen/Qwen3.5-9B"
-CONTEXT_LIMIT = 8192
+CONTEXT_LIMIT = 16384
 OUTPUT_LIMIT = 6144
 CONCURRENCY = 8
 MAX_SAMPLE_FAILURE_RATE = 0.05
 METHODS = ("adas", "gdesigner")
 MASBENCH_AXES = ("breadth", "depth", "horizon", "parallel", "robustness")
 MASBENCH_PROTOCOL = "masbench_external_five_axis_v1"
-AIME_PROTOCOL = "aime_external_methods_v3_canonical_frozen_data"
+AIME_PROTOCOL = "aime_external_methods_v5_16k_shared_task_input"
 UPSTREAM_COMMITS = {
     "adas": "2702bee8fefda42255efc5be9f60e3bd3db96ae4",
     "gdesigner": "a6efcfa3b40bb4d9cbf46f883a95d62020bd8251",
@@ -212,7 +212,10 @@ def task_text(dataset: str, row: dict[str, Any]) -> str:
             instruction += ("For explicitly injected factual or magic-number values, preserve the value exactly as stated; "
                             "do not reduce those raw values modulo 23. Apply Z_23 only to algebraic quantities.\n")
         return f"{instruction}\nProblem: {row['input']}"
-    return f"Solve this AIME problem. Give a concise derivation and put the integer answer on the last line as FINAL ANSWER: <integer>.\n\n{row['problem']}"
+    # Same user-facing task text as AFlow/MaAS, not a stronger
+    # ADAS/G-Designer-only instruction. Native optimizers remain unchanged.
+    from native_aime_formal import format_aime_task
+    return format_aime_task(str(row["problem"]))
 
 
 def score_row(dataset: str, output: Any, gold: Any) -> dict[str, Any]:
@@ -569,7 +572,7 @@ def run_adas(dataset: str, rows: dict[str, list[dict[str, Any]]], args: argparse
         try:
             content = runtime._messages_call(
                 [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
-                temperature=float(self.temperature), json_mode=True, phase=phase_name,
+                temperature=(0.0 if dataset == "aime" else float(self.temperature)), json_mode=True, phase=phase_name,
             )
             response_json = _parse_json_object(content)
         except Exception:
@@ -730,6 +733,16 @@ def run_adas(dataset: str, rows: dict[str, list[dict[str, Any]]], args: argparse
                 "failure": f"{type(exc).__name__}: {exc}"}
         code_to_candidate[code_hash] = row
         selection_rows.append(row)
+    # Save every D_select archive candidate (including rejected candidates)
+    # before the strict selection gate can abort the formal runner.
+    write_json(args.run_dir / "selection_audit.json", {
+        "schema": "aime_fourway_selection_audit_v1", "method": "adas",
+        "split": "D_select", "dtest_opened": False,
+        "candidate_rows": selection_rows,
+        "native_search_archive": str(archive_path),
+        "failure_limit": MAX_SAMPLE_FAILURE_RATE,
+        "telemetry": runtime.summary(),
+    })
     valid = [row for row in selection_rows if row.get("valid") is True]
     if not valid:
         raise RuntimeError("ADAS has no valid candidate on D_select (failure rate must be <=5%).")
@@ -975,7 +988,7 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
                          "content": str(item.get("content") if isinstance(item, dict) else item.content)}
                         for item in messages]
         phase = os.environ.get("MASBENCH_PHASE", "unattributed")
-        return await runtime.call_async(material, temperature=float(temperature if temperature is not None else 0.2), phase=phase)
+        return await runtime.call_async(material, temperature=(0.0 if dataset == "aime" else float(temperature if temperature is not None else 0.2)), phase=phase)
     GPTChat.agen = controlled_agen
     LLMRegistry.register  # explicit reference ensures registry is initialized
 
@@ -1125,6 +1138,16 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
             }, stream)
         controller_sha256 = sha256_file(controller_path)
         selected = await evaluate_split(rows["select"], "select")
+        # Preserve the full 30-item audit and trained controller identity even
+        # if the existing 5% quality gate correctly blocks D_test access.
+        write_json(args.run_dir / "selection_audit.json", {
+            "schema": "aime_fourway_selection_audit_v1", "method": "gdesigner",
+            "split": "D_select", "dtest_opened": False,
+            "selection_metrics": selected,
+            "controller_sha256": controller_sha256,
+            "failure_limit": MAX_SAMPLE_FAILURE_RATE,
+            "telemetry": runtime.summary(),
+        })
         if (selected["failure_fraction"] > MAX_SAMPLE_FAILURE_RATE
                 or selected["request_failure_fraction"] > MAX_SAMPLE_FAILURE_RATE
                 or selected["truncation_fraction"] > MAX_SAMPLE_FAILURE_RATE):
@@ -1372,7 +1395,7 @@ def main() -> int:
         result["dtest_access_manifest_sha256"] = manifest["dtest_access_manifest_sha256"]
         result["run_id"] = run_id
         result["controls"] = {"model": MODEL, "endpoint": args.endpoint, "max_model_len": CONTEXT_LIMIT,
-            "max_tokens": OUTPUT_LIMIT, "temperature_policy": "native method/agent settings",
+            "max_tokens": OUTPUT_LIMIT, "temperature_policy": "AIME task executor temperature=0; method-native ADAS meta-search temperature retained",
             "request_timeout_s": runtime.request_timeout_s,
             "top_p": 1.0, "thinking": False, "concurrency": CONCURRENCY, "seed": args.seed,
             "data_seed": 2026, "selection_split": "D_select", "test_split": "D_test",

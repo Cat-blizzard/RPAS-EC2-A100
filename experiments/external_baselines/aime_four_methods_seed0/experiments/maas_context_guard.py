@@ -19,13 +19,13 @@ from typing import Any
 
 
 VERSION = "maas_context_guard_v1"
-CONTEXT_LIMIT = 8192
+CONTEXT_LIMIT = 16384
 # Qwen3.5-9B is being evaluated with an 8K context.  The native AFlow/MaAS
 # graphs often need a second code-generation or ensemble response, so leaving
 # only ~1.4K output tokens after a 6.8K prompt causes silent truncation and
 # malformed Python.  Reserve a balanced 4K/4K window instead.
-TARGET_INPUT_TOKENS = 4096
-MIN_OUTPUT_RESERVE = 4096
+TARGET_INPUT_TOKENS = 8192
+MIN_OUTPUT_RESERVE = 6144
 COMPACTION_MARKER = "\n[deterministic context compaction: omitted middle text]\n"
 
 
@@ -221,6 +221,7 @@ class PromptGuard:
                 "original_input_tokens": original_count,
                 "final_input_tokens": original_count,
                 "requested_max_tokens": requested_max_tokens,
+                "effective_max_tokens": max(1, min(requested_max_tokens, self.context_limit - original_count)),
             }
 
         # Keep the system prompt intact.  The public policy is appended by the
@@ -271,6 +272,7 @@ class PromptGuard:
             "original_input_tokens": original_count,
             "final_input_tokens": final_count,
             "requested_max_tokens": requested_max_tokens,
+            "effective_max_tokens": max(1, min(requested_max_tokens, self.context_limit - final_count)),
         }
         if len(self.events) < 100:
             self.events.append(event)
