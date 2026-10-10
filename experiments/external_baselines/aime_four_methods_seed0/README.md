@@ -49,7 +49,7 @@ reproductions.
 | Split seed | `2026` |
 | Validation and test split | Canonical frozen `D_search=60` and `D_select=30` files from the pinned manifest; AIME2025 and AIME2026 each have a separate canonical 30-row `D_test` |
 | Task model | `Qwen/Qwen3.5-9B` |
-| Server context / method output cap | `8192 / 6144` tokens |
+| Server context / method output cap | `16384 / 6144` tokens (Final V3 16K profile) |
 | Request concurrency | `8` |
 | Shared reported score | `0` unparseable, `1` parseable but wrong, `2` exact match |
 | Pair execution | Two methods in the selected pair, serially on one visible GPU |
@@ -132,8 +132,24 @@ bash scripts/run_single48g_all.sh all --method-order maas,adas,gdesigner,aflow
 The all-method launcher assigns each formal method its own service session
 and records failures without accepting an incomplete comparison.
 
-The runner starts one local vLLM server (`TP=1`, context 8192, max-num-seqs
-24, GPU utilization 0.92), sends a disposable model smoke request, then runs
+For long runs, use the detached launcher after exporting the paths above:
+
+```bash
+export AIME_OUTPUT_ROOT="$PWD/outputs/aime_four_methods_seed0_new"
+export AIME_LAUNCH_DIR="$PWD/logs/aime_four_methods_seed0_new"
+bash scripts/launch_detached.sh all --method-order maas,adas,gdesigner,aflow
+```
+
+It creates an independent session with stdin at `/dev/null`, stdout/stderr
+directly in `AIME_LAUNCH_DIR/run.log`, and launch/PID/exit records in that
+directory. `completion.json` records the launcher exit; formal acceptance
+still requires the method quality gates and `attempt_summary.json`. Use
+`diagnostics` in place of `all` for the synthetic checks only. Both the launch
+directory and the output root must be fresh. Do not pipe long runs through
+the terminal or a `tee` process tied to the terminal's lifetime.
+
+The Final V3 runner starts one local vLLM server (`TP=1`, context 16384, max-num-seqs
+8, GPU utilization 0.92), sends a disposable model smoke request, then runs
 the two selected methods one at a time. Its smoke request is outside the
 experiment telemetry. Logs are under `logs/`; result artifacts remain under
 the chosen output directory. The script does not submit to Slurm and offers no

@@ -16,6 +16,7 @@ import csv
 import concurrent.futures
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from functools import wraps
 import hashlib
 import json
 import math
@@ -26,6 +27,7 @@ import shutil
 import subprocess
 import sys
 import time
+import traceback
 import weakref
 from urllib.request import urlopen
 from answer_protocol import extract_aime_answer, score_aime
@@ -959,6 +961,51 @@ def usage_delta(after: dict[str, int], before: dict[str, int]) -> dict[str, int]
 def dump_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, default=str) + "\n", encoding="utf-8")
+
+
+def persist_failure_traceback(run_dir: Path, stage: str, exc: BaseException) -> Path | None:
+    """Save an exception independently of native loggers and terminal pipes."""
+    path = run_dir / "failure_tracebacks.jsonl"
+    record = {
+        "schema": "aime_runtime_failure_traceback_v1",
+        "stage": stage,
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "created_at_epoch": time.time(),
+        "pid": os.getpid(),
+        "exception_type": f"{type(exc).__module__}.{type(exc).__qualname__}",
+        "exception_message": str(exc),
+        "traceback": "".join(traceback.format_exception(type(exc), exc, exc.__traceback__)),
+    }
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as stream:
+            stream.write(json.dumps(record, ensure_ascii=False) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+    except OSError as write_error:
+        # A diagnostic storage failure must not replace the native exception
+        # or change which error its retry policy receives.
+        if hasattr(exc, "add_note"):
+            exc.add_note(f"Could not persist failure traceback to {path}: {write_error}")
+        return None
+    return path
+
+
+def install_maas_optimizer_failure_traceback(optimizer: Any, run_dir: Path) -> None:
+    """Record the inner failure before native optimize catches and logs it."""
+    original = optimizer._optimize_graph_maas
+
+    @wraps(original)
+    async def traced_optimize_graph(*args: Any, **kwargs: Any):
+        try:
+            return await original(*args, **kwargs)
+        except Exception as exc:
+            persist_failure_traceback(run_dir, "maas._optimize_graph_maas", exc)
+            raise
+
+    # Bind only this run's instance; upstream source and optimizer policy stay
+    # unchanged, including native retry count, sleeps, and checkpoint writes.
+    optimizer._optimize_graph_maas = traced_optimize_graph
 
 
 def empty_phase_usage() -> dict[str, int]:
@@ -2053,6 +2100,7 @@ def run_maas(args: argparse.Namespace, search_rows: list[dict[str, Any]], select
         lr=0.01,
         is_textgrad=False,
     )
+    install_maas_optimizer_failure_traceback(optimizer, args.run_dir)
     if not args.maas_resume:
         with phase_scope("search", maas_usage["phase_wall_seconds"]):
             optimizer.optimize("Graph")
@@ -2349,8 +2397,11 @@ def main() -> None:
         dump_json(args.run_dir / "split_manifest.json", split_manifest)
         dump_json(args.run_dir / "run_manifest.json", run_manifest)
     except BaseException as exc:
+        failure_traceback_path = persist_failure_traceback(args.run_dir, "runner.main", exc)
         run_manifest["status"] = "failed"
         run_manifest["failure"] = f"{type(exc).__name__}: {exc}"
+        if failure_traceback_path is not None:
+            run_manifest["failure_tracebacks_path"] = str(failure_traceback_path)
         dump_json(args.run_dir / "run_manifest.json", run_manifest)
         raise
 
