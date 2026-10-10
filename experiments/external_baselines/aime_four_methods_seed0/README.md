@@ -148,6 +148,36 @@ still requires the method quality gates and `attempt_summary.json`. Use
 directory and the output root must be fresh. Do not pipe long runs through
 the terminal or a `tee` process tied to the terminal's lifetime.
 
+## Run independent methods on separate GPUs
+
+After exporting the model and Python paths above, use a separate GPU, port,
+output root, launch directory, cache, and temporary directory for each method:
+
+```bash
+export CUDA_VISIBLE_DEVICES=2 AIME_PORT=18181
+export AIME_OUTPUT_ROOT=/absolute/path/adas_attempt
+export AIME_LAUNCH_DIR=/absolute/path/adas_launch
+export AIME_CACHE_DIR=/absolute/path/adas_cache
+export AIME_TEMP_DIR=/absolute/path/adas_temp
+export AIME_DIAGNOSTIC_DIR=/absolute/path/adas_diagnostics
+bash scripts/launch_single_detached.sh --method adas
+```
+
+The same command accepts `aflow` and `gdesigner`. Each worker first runs the
+method's synthetic diagnostic on its assigned card, verifies the diagnostic
+record, then starts a fresh formal service session. The 16K context, 6144-token
+output cap, seed, data, search budgets, and quality gates remain unchanged.
+Read `stage.txt`, `run.log`, and `completion.json` in the launch directory;
+launch records alone establish no accepted result.
+
+`scripts/supervise_parallel.py --plan /absolute/path/parallel_plan.json`
+supports the documented [2026-10-10 queue handoff](deployment/PARALLEL_2026-10-10.md).
+It observes the independent workers, waits for the retained MaAS task and its
+service to exit, retires the paused old dispatcher, and starts G-Designer.
+Only four completed formal passes are copied into a fresh aggregate directory;
+source results are retained with a file checksum mapping. A cancelled old
+dispatcher is recorded as superseded scheduling, separate from MaAS's outcome.
+
 The Final V3 runner starts one local vLLM server (`TP=1`, context 16384, max-num-seqs
 8, GPU utilization 0.92), sends a disposable model smoke request, then runs
 the two selected methods one at a time. Its smoke request is outside the
