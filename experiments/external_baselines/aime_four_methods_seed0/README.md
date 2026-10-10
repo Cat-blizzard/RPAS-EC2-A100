@@ -167,6 +167,8 @@ The same command accepts `aflow` and `gdesigner`. Each worker first runs the
 method's synthetic diagnostic on its assigned card, verifies the diagnostic
 record, then starts a fresh formal service session. The 16K context, 6144-token
 output cap, seed, data, search budgets, and quality gates remain unchanged.
+The disposable endpoint smoke waits up to 300 seconds for first-request kernel
+compilation; `AIME_ENDPOINT_SMOKE_TIMEOUT_S` overrides this startup-only limit.
 Read `stage.txt`, `run.log`, and `completion.json` in the launch directory;
 launch records alone establish no accepted result.
 

@@ -187,12 +187,20 @@ done
 
 # A disposable endpoint smoke test; it is not part of any search/test metric.
 run_python "$COMMON_PYTHON" - "$PORT" <<'PY'
-import sys
+import math, os, sys, time
 from openai import OpenAI
-client = OpenAI(base_url=f"http://127.0.0.1:{sys.argv[1]}/v1", api_key="EMPTY", timeout=30, max_retries=0)
+try:
+    timeout = float(os.environ.get("AIME_ENDPOINT_SMOKE_TIMEOUT_S", "300"))
+except ValueError:
+    raise SystemExit("AIME_ENDPOINT_SMOKE_TIMEOUT_S must be a finite positive number")
+if not math.isfinite(timeout) or timeout <= 0:
+    raise SystemExit("AIME_ENDPOINT_SMOKE_TIMEOUT_S must be a finite positive number")
+print(f"MODEL_ENDPOINT_SMOKE_START timeout_s={timeout:g}", flush=True)
+started = time.monotonic()
+client = OpenAI(base_url=f"http://127.0.0.1:{sys.argv[1]}/v1", api_key="EMPTY", timeout=timeout, max_retries=0)
 r = client.chat.completions.create(model="Qwen/Qwen3.5-9B", messages=[{"role":"user","content":"Return only OK."}], max_tokens=16, temperature=0, extra_body={"chat_template_kwargs":{"enable_thinking":False}})
 assert r.choices and (r.choices[0].message.content or "").strip()
-print("MODEL_ENDPOINT_SMOKE_PASS", flush=True)
+print(f"MODEL_ENDPOINT_SMOKE_PASS elapsed_s={time.monotonic() - started:.3f}", flush=True)
 PY
 
 write_method_record() {
