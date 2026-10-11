@@ -950,8 +950,97 @@ def patch_gdesigner_numerics(graph_module: Any) -> dict[str, Any]:
     return audit
 
 
+def _restore_gdesigner_controller(
+    graph: Any, checkpoint_path: Path, expected_sha256: str, seed: int,
+    role_graph_adapter: dict[str, Any], numerical_adapter: dict[str, Any],
+) -> tuple[dict[str, dict[str, Any]], dict[str, bool], Any]:
+    """Strictly restore the frozen native state; never substitute a fresh controller."""
+    import torch
+
+    if seed != 0 or sha256_file(checkpoint_path) != expected_sha256:
+        raise RuntimeError("G-Designer recovery requires the authorized seed 0 checkpoint identity")
+    checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+    expected_keys = {"schema", "seed", "state_dicts", "role_graph_adapter",
+                     "role_adjacency_edge_index", "numerical_compatibility_adapter",
+                     "module_training_modes", "frozen_phase"}
+    if (not isinstance(checkpoint, dict) or set(checkpoint) != expected_keys
+            or checkpoint["schema"] != "aime_gdesigner_controller_v1"
+            or checkpoint["seed"] != seed
+            or checkpoint["frozen_phase"] != "after D_search and before D_select/D_test"):
+        raise RuntimeError("G-Designer frozen checkpoint schema/seed/phase does not match")
+    if _sha256_json(checkpoint["role_graph_adapter"]) != _sha256_json(role_graph_adapter):
+        raise RuntimeError("G-Designer checkpoint role adapter differs from this recovery")
+    saved_numerics = checkpoint["numerical_compatibility_adapter"]
+    if (not isinstance(saved_numerics, dict)
+            or set(saved_numerics) != set(numerical_adapter)
+            or type(saved_numerics.get("zero_span_calls")) is not int
+            or saved_numerics["zero_span_calls"] < 0
+            or {key: value for key, value in saved_numerics.items() if key != "zero_span_calls"}
+            != {key: value for key, value in numerical_adapter.items() if key != "zero_span_calls"}):
+        raise RuntimeError("G-Designer checkpoint numerical adapter differs from this recovery")
+    role_edges = checkpoint["role_adjacency_edge_index"]
+    current_edges = graph.role_adj_matrix.detach().cpu()
+    if (not isinstance(role_edges, torch.Tensor) or role_edges.dtype != current_edges.dtype
+            or role_edges.shape != current_edges.shape or not torch.equal(role_edges, current_edges)):
+        raise RuntimeError("G-Designer checkpoint role adjacency differs from the native graph")
+    modes = checkpoint["module_training_modes"]
+    states = checkpoint["state_dicts"]
+    if (not isinstance(modes, dict) or set(modes) != {"gcn", "mlp"}
+            or modes != {"gcn": False, "mlp": True}
+            or any(type(value) is not bool for value in modes.values())
+            or not isinstance(states, dict) or set(states) != {"gcn", "mlp"}):
+        raise RuntimeError("G-Designer checkpoint module state/modes do not match native post-search inference")
+    frozen_state: dict[str, dict[str, Any]] = {}
+    for module_name in ("gcn", "mlp"):
+        module = getattr(graph, module_name)
+        state = states[module_name]
+        expected = module.state_dict()
+        if not isinstance(state, dict) or set(state) != set(expected):
+            raise RuntimeError(f"G-Designer checkpoint {module_name} state keys differ")
+        for key, value in state.items():
+            if (not isinstance(value, torch.Tensor) or value.dtype != expected[key].dtype
+                    or value.shape != expected[key].shape):
+                raise RuntimeError(f"G-Designer checkpoint {module_name}.{key} tensor contract differs")
+            require_finite_gdesigner(value, f"checkpoint {module_name}.{key}")
+        module.load_state_dict(state, strict=True)
+        module.train(modes[module_name])
+        frozen_state[module_name] = {key: value.detach().cpu().clone() for key, value in state.items()}
+    require_finite_gdesigner_model(graph, "restored frozen controller")
+    if sha256_file(checkpoint_path) != expected_sha256:
+        raise RuntimeError("G-Designer checkpoint artifact changed while loading")
+    return frozen_state, dict(modes), role_edges.detach().cpu().clone()
+
+
+def _require_gdesigner_frozen_controller(
+    graph: Any, state: dict[str, dict[str, Any]], modes: dict[str, bool], role_edges: Any,
+    checkpoint_path: Path, expected_sha256: str,
+) -> None:
+    """Fail closed on any parameter, buffer, training-mode, edge, or artifact change."""
+    import torch
+
+    require_finite_gdesigner_model(graph, "frozen recovery inference controller", gradients=True)
+    for module_name, expected in state.items():
+        module = getattr(graph, module_name)
+        observed = module.state_dict()
+        if (module.training is not modes[module_name] or set(observed) != set(expected)
+                or any(value.dtype != observed[key].dtype or value.shape != observed[key].shape
+                       or not torch.equal(value, observed[key].detach().cpu())
+                       for key, value in expected.items())):
+            raise RuntimeError("G-Designer frozen controller changed during recovery inference")
+        for key, value in observed.items():
+            require_finite_gdesigner(value, f"frozen recovery {module_name}.{key}")
+    observed_edges = graph.role_adj_matrix.detach().cpu()
+    if (observed_edges.dtype != role_edges.dtype or observed_edges.shape != role_edges.shape
+            or not torch.equal(observed_edges, role_edges)
+            or graph.optimized_spatial is not True or graph.optimized_temporal is not False):
+        raise RuntimeError("G-Designer frozen graph connectivity changed during recovery inference")
+    if sha256_file(checkpoint_path) != expected_sha256:
+        raise RuntimeError("G-Designer frozen checkpoint artifact changed during recovery inference")
+
+
 def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: argparse.Namespace,
-                  run_id: str, runtime: ModelRuntime, source: Path) -> dict[str, Any]:
+                  run_id: str, runtime: ModelRuntime, source: Path, *,
+                  test_recovery: dict[str, Any] | None = None) -> dict[str, Any]:
     """Run official G-Designer Graph + GCN/MLP + REINFORCE with a local task promptset."""
     source = source.resolve()
     sys.path.insert(0, str(source))
@@ -1003,10 +1092,64 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
         node_kwargs=[{"role": role} for role in role_names])
     graph.gcn.train()
     require_finite_gdesigner_model(graph, "initial parameters")
-    optimizer = torch.optim.Adam(graph.gcn.parameters(), lr=0.1)
+    optimizer = torch.optim.Adam(graph.gcn.parameters(), lr=0.1) if test_recovery is None else None
     controller_path = args.run_dir / "gdesigner_controller.pt"
     controller_sha256 = ""
     frozen_controller_state: dict[str, dict[str, Any]] = {}
+    recovery_modes: dict[str, bool] = {}
+    recovery_role_edges: Any = None
+    recovery_metadata: dict[str, Any] | None = None
+    source_controller_path: Path | None = None
+    if test_recovery is not None:
+        if dataset != "aime" or args.seed != 0:
+            raise ValueError("G-Designer test recovery is authorized only for AIME seed 0")
+        if not callable(test_recovery.get("checkpoint_completed")):
+            raise ValueError("G-Designer recovery requires a durable test completion callback")
+        if test_recovery.get("before_tests") is not None and not callable(test_recovery["before_tests"]):
+            raise ValueError("G-Designer recovery before_tests hook must be callable")
+        if test_recovery.get("sample_completed") is not None and not callable(test_recovery["sample_completed"]):
+            raise ValueError("G-Designer recovery sample_completed hook must be callable")
+        if test_recovery.get("close_async_client") is not None and not callable(test_recovery["close_async_client"]):
+            raise ValueError("G-Designer recovery close_async_client hook must be callable")
+        source_controller_path = Path(test_recovery["controller_path"]).resolve()
+        controller_sha256 = str(test_recovery["checkpoint_sha256"])
+        if source_controller_path == controller_path.resolve():
+            raise ValueError("G-Designer recovery must copy the checkpoint into a fresh run")
+        if sha256_file(source_controller_path) != controller_sha256:
+            raise RuntimeError("G-Designer original checkpoint identity differs before recovery")
+        with source_controller_path.open("rb") as original, controller_path.open("xb") as recovered:
+            shutil.copyfileobj(original, recovered)
+            recovered.flush()
+            os.fsync(recovered.fileno())
+        frozen_controller_state, recovery_modes, recovery_role_edges = _restore_gdesigner_controller(
+            graph, controller_path, controller_sha256, args.seed, role_graph_adapter, numerical_adapter,
+        )
+        recovery_metadata = {
+            "graph_id": graph.id,
+            "nodes": [{"id": node_id, "role": node.role} for node_id, node in graph.nodes.items()],
+            "decision_node_id": graph.decision_node.id,
+            "node_identity_policy": "new native shortuuid IDs; historical IDs are absent from checkpoint",
+            "rng_policy": "seed 0 reset at recovery stage; historical RNG state is absent from checkpoint",
+            "module_training_modes": dict(recovery_modes), "controller_sha256": controller_sha256,
+            "reused_search": True, "reused_selection": True,
+            "acceptance_status": "NOT_FORMAL_PASS",
+        }
+
+    def require_recovery_identity() -> None:
+        if test_recovery is not None:
+            _require_gdesigner_frozen_controller(graph, frozen_controller_state, recovery_modes,
+                                                recovery_role_edges, controller_path, controller_sha256)
+            if sha256_file(source_controller_path) != controller_sha256:
+                raise RuntimeError("G-Designer original checkpoint changed during recovery")
+
+    def waived_gate_audit(point: dict[str, Any], phase: str) -> dict[str, Any]:
+        rates = {key: float(point[key]) for key in
+                 ("failure_fraction", "request_failure_fraction", "truncation_fraction")}
+        return {"phase": phase, "waived": True, "original_failure_limit": MAX_SAMPLE_FAILURE_RATE,
+                "original_gate_passed": all(value <= MAX_SAMPLE_FAILURE_RATE for value in rates.values()),
+                "observed_rates": rates,
+                "authorization": "user explicitly requested G-Designer continuation without quality thresholds",
+                "acceptance_status": "NOT_FORMAL_PASS"}
 
     def records(split: list[dict[str, Any]]) -> list[dict[str, Any]]:
         return [{"task": task_text(dataset, row), "gold": str(row.get("answer", "")),
@@ -1014,6 +1157,8 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
                 for index, row in enumerate(split)]
 
     async def infer(batch: list[dict[str, Any]], phase: str, train: bool = False) -> tuple[list[dict[str, Any]], list[Any]]:
+        if test_recovery is not None and train:
+            raise RuntimeError("G-Designer frozen test recovery cannot perform optimizer updates")
         require_finite_gdesigner_model(graph, f"{phase} parameters before inference")
         before = dict(runtime.usage["totals"])
         previous = os.environ.get("MASBENCH_PHASE")
@@ -1032,13 +1177,20 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
                         "parser_valid": bool(score["parser_valid"]), "correct": bool(score["correct"]),
                         "score_0_1_2": int(score["score_0_1_2"]),
                         "sample_failed": not bool(score["parser_valid"]), "raw_output": str(raw)}
-                    return audit, log_prob
                 except GDesignerNumericalError:
                     raise
                 except Exception as exc:
-                    return {"id": item["id"], "prediction": "", "gold": item["gold"],
+                    audit = {"id": item["id"], "prediction": "", "gold": item["gold"],
                         "parser_valid": False, "correct": False, "score_0_1_2": 0,
-                        "sample_failed": True, "failure": f"{type(exc).__name__}: {exc}"}, torch.tensor(0.0)
+                        "sample_failed": True, "failure": f"{type(exc).__name__}: {exc}"}
+                    log_prob = torch.tensor(0.0)
+                if test_recovery is not None:
+                    sample_completed = test_recovery.get("sample_completed")
+                    if sample_completed is not None:
+                        # Persistence failures must propagate, rather than be
+                        # mislabeled as an upstream per-sample model failure.
+                        sample_completed(phase, audit)
+                return audit, log_prob
             pairs = await asyncio.gather(*(one(item) for item in batch))
             audit, log_probs = zip(*pairs) if pairs else ([], [])
             if train:
@@ -1049,6 +1201,7 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
                 losses = [-log_prob * utility for log_prob, utility in zip(log_probs, utilities)]
                 losses = [loss for loss in losses if getattr(loss, "requires_grad", False)]
                 if losses:
+                    assert optimizer is not None
                     loss = torch.mean(torch.stack(losses))
                     require_finite_gdesigner(loss, f"{phase} REINFORCE loss")
                     optimizer.zero_grad()
@@ -1115,29 +1268,34 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
             "truncation_fraction": truncation_fraction,
             "total_tokens": int(phase_usage["total_tokens"])}
 
-    async def full_run() -> tuple[list[dict[str, Any]], list[list[str]], float, dict[str, Any], dict[str, Any]]:
+    async def full_run() -> tuple[Any, Any, float | None, dict[str, Any], dict[str, Any]]:
         nonlocal controller_sha256, frozen_controller_state
         runtime.async_semaphore = asyncio.Semaphore(CONCURRENCY)
-        started = time.time()
-        search_result, training_row_ids = await training_loop()
-        elapsed = time.time() - started
-        require_finite_gdesigner_model(graph, "controller frozen after D_search", gradients=True)
-        frozen_controller_state = {
-            name: {key: value.detach().cpu().clone() for key, value in getattr(graph, name).state_dict().items()}
-            for name in ("gcn", "mlp")
-        }
-        with controller_path.open("xb") as stream:
-            torch.save({
-                "schema": "aime_gdesigner_controller_v1", "seed": args.seed,
-                "state_dicts": frozen_controller_state,
-                "role_graph_adapter": role_graph_adapter,
-                "role_adjacency_edge_index": graph.role_adj_matrix.detach().cpu().clone(),
-                "numerical_compatibility_adapter": dict(numerical_adapter),
-                "module_training_modes": {name: getattr(graph, name).training for name in ("gcn", "mlp")},
-                "frozen_phase": "after D_search and before D_select/D_test",
-            }, stream)
-        controller_sha256 = sha256_file(controller_path)
-        selected = await evaluate_split(rows["select"], "select")
+        if test_recovery is None:
+            started = time.time()
+            search_result, training_row_ids = await training_loop()
+            elapsed = time.time() - started
+            require_finite_gdesigner_model(graph, "controller frozen after D_search", gradients=True)
+            frozen_controller_state = {
+                name: {key: value.detach().cpu().clone() for key, value in getattr(graph, name).state_dict().items()}
+                for name in ("gcn", "mlp")
+            }
+            with controller_path.open("xb") as stream:
+                torch.save({
+                    "schema": "aime_gdesigner_controller_v1", "seed": args.seed,
+                    "state_dicts": frozen_controller_state,
+                    "role_graph_adapter": role_graph_adapter,
+                    "role_adjacency_edge_index": graph.role_adj_matrix.detach().cpu().clone(),
+                    "numerical_compatibility_adapter": dict(numerical_adapter),
+                    "module_training_modes": {name: getattr(graph, name).training for name in ("gcn", "mlp")},
+                    "frozen_phase": "after D_search and before D_select/D_test",
+                }, stream)
+            controller_sha256 = sha256_file(controller_path)
+            selected = await evaluate_split(rows["select"], "select")
+        else:
+            search_result = training_row_ids = elapsed = None
+            selected = copy.deepcopy(test_recovery["selection_metrics"])
+            require_recovery_identity()
         # Preserve the full 30-item audit and trained controller identity even
         # if the existing 5% quality gate correctly blocks D_test access.
         write_json(args.run_dir / "selection_audit.json", {
@@ -1147,8 +1305,18 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
             "controller_sha256": controller_sha256,
             "failure_limit": MAX_SAMPLE_FAILURE_RATE,
             "telemetry": runtime.summary(),
+            **({"reused_without_model_requests": True,
+                "selection_metrics_origin": "retained selection audit",
+                "telemetry_scope": "new test continuation; no selection calls"}
+               if test_recovery is not None else {}),
         })
-        if (selected["failure_fraction"] > MAX_SAMPLE_FAILURE_RATE
+        if test_recovery is not None:
+            write_json(args.run_dir / "gate_waiver_audit.json", {
+                "schema": "aime_gdesigner_quality_gate_waiver_v1", "method": "gdesigner",
+                "selection": waived_gate_audit(selected, "select"), "test": {},
+                "acceptance_status": "NOT_FORMAL_PASS",
+            })
+        elif (selected["failure_fraction"] > MAX_SAMPLE_FAILURE_RATE
                 or selected["request_failure_fraction"] > MAX_SAMPLE_FAILURE_RATE
                 or selected["truncation_fraction"] > MAX_SAMPLE_FAILURE_RATE):
             raise RuntimeError("G-Designer D_select failure rate exceeds 5%; refusing to open D_test.")
@@ -1164,21 +1332,36 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
              "controller_sha256": controller_sha256},
             source_provenance=args.upstream_provenance,
         )
+        if test_recovery is not None:
+            require_recovery_identity()
+            before_tests = test_recovery.get("before_tests")
+            if before_tests is not None:
+                before_tests(copy.deepcopy(recovery_metadata))
         test_results: dict[str, Any] = {}
         for name in ("aime_2025", "aime_2026"):
             test_rows = load_aime_test_rows_after_freeze(
                 args.data_dir, args.run_dir, "gdesigner", f"{name}.jsonl", 30
             )
             point = await evaluate_split(test_rows, f"test:{name}")
-            if (point["failure_fraction"] > MAX_SAMPLE_FAILURE_RATE
+            if test_recovery is None and (point["failure_fraction"] > MAX_SAMPLE_FAILURE_RATE
                     or point["request_failure_fraction"] > MAX_SAMPLE_FAILURE_RATE
                     or point["truncation_fraction"] > MAX_SAMPLE_FAILURE_RATE):
                 raise RuntimeError(f"G-Designer {name} failure rate exceeds 5%.")
             point["tokens_per_example"] = point["total_tokens"] / max(1, point["num_examples"])
             point["operating_point"] = "Q"
             point["selected_candidate"] = "trained_gdesigner_graph"
+            if test_recovery is not None:
+                point["phase"] = f"test:{name}"
+                point["gate_audit"] = waived_gate_audit(point, point["phase"])
             point_e = {**point, "operating_point": "E", "same_candidate_as": "Q"}
             test_results[name] = {**point, "Q": point, "E": point_e}
+            if test_recovery is not None:
+                require_recovery_identity()
+                test_recovery["checkpoint_completed"](name, test_results[name], runtime)
+                waiver_path = args.run_dir / "gate_waiver_audit.json"
+                waiver = json.loads(waiver_path.read_text(encoding="utf-8"))
+                waiver["test"][name] = point["gate_audit"]
+                write_json(waiver_path, waiver)
         require_finite_gdesigner_model(graph, "final inference parameters", gradients=True)
         for module_name, state in frozen_controller_state.items():
             observed = getattr(graph, module_name).state_dict()
@@ -1186,10 +1369,23 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
                 raise RuntimeError("G-Designer controller changed after its D_search freeze")
         if sha256_file(controller_path) != controller_sha256:
             raise RuntimeError("G-Designer frozen controller artifact changed during evaluation")
+        require_recovery_identity()
         return search_result, training_row_ids, elapsed, selected, test_results
 
-    search_audit, training_row_ids, search_seconds, selection, tests = asyncio.run(full_run())
-    return {
+    async def recovery_run() -> tuple[Any, Any, float | None, dict[str, Any], dict[str, Any]]:
+        try:
+            return await full_run()
+        finally:
+            close_async_client = test_recovery.get("close_async_client")
+            if close_async_client is not None:
+                # HTTPX connections belong to the inference event loop. Close
+                # them here on both success and failure before that loop ends.
+                await close_async_client()
+
+    search_audit, training_row_ids, search_seconds, selection, tests = asyncio.run(
+        full_run() if test_recovery is None else recovery_run()
+    )
+    result = {
         "method": "gdesigner", "search_entrypoint": "G-Designer Graph.arun + task-conditioned GCN/MLP + REINFORCE",
         "native_method_config": {"agent_names": agent_names, "agent_count": 4,
             "decision_method": "FinalRefer", "mode": "FullConnected", "optimized_spatial": True,
@@ -1202,13 +1398,20 @@ def run_gdesigner(dataset: str, rows: dict[str, list[dict[str, Any]]], args: arg
             "controller_checkpoint": str(controller_path), "controller_sha256": controller_sha256,
             "controller_unchanged_after_search": True,
             "embedding_model": str(embedding_dir)},
-        "search_seconds": search_seconds, "search": {"rows": search_audit,
+        "search_seconds": search_seconds, "search": ({"rows": None, "accuracy": None,
+            "unique_d_search_examples": len(rows["search"]), "training_instances": None,
+            "post_training_d_search_examples": None, "training_row_ids": None,
+            "reused_search": True, "historical_telemetry_available": False}
+            if test_recovery is not None else {"rows": search_audit,
             "accuracy": sum(int(x["correct"]) for x in search_audit) / len(search_audit),
             "unique_d_search_examples": len(rows["search"]), "training_instances": 40,
-            "post_training_d_search_examples": len(search_audit)},
+            "post_training_d_search_examples": len(search_audit)}),
         "selection": {**selection, "split": "D_select"}, "selected_Q": "trained_gdesigner_graph",
         "selected_E": "same_candidate_as_Q", "test": tests, "telemetry": runtime.summary(),
     }
+    if test_recovery is not None:
+        result["recovery_metadata"] = recovery_metadata
+    return result
 
 
 def parse_args() -> argparse.Namespace:

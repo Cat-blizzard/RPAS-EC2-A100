@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Detach a guarded server and recover only previously unopened AIME 2026 tests.
+"""Detach a guarded server and recover previously unopened frozen AIME tests.
 
 Contract: a fresh output and launch directory, one local GPU, one local port,
-and an ordered nonempty subset of [aflow, maas]. The frozen source runs are
+and an ordered nonempty subset of [aflow, maas], or G-Designer alone with an
+explicit selection-gate waiver. The frozen source runs are
 read-only; recover_aime_tests owns durable source claims and test provenance.
 Completion is supplemental/NOT_FORMAL_PASS even when all recoveries succeed.
 """
@@ -90,8 +91,8 @@ def load_plan(path: Path) -> dict[str, Any]:
     if not isinstance(port, int) or isinstance(port, bool) or not 1024 <= port <= 65535:
         raise ValueError("port must be an integer between 1024 and 65535")
     methods = [item["method"] for item in plan["runs"]]
-    if methods not in (["aflow"], ["maas"], ["aflow", "maas"]):
-        raise ValueError("runs must be a nonempty ordered unique subset of aflow, maas")
+    if methods not in (["aflow"], ["maas"], ["aflow", "maas"], ["gdesigner"]):
+        raise ValueError("runs must be a nonempty ordered unique subset of aflow, maas, or gdesigner alone")
     output, launch = Path(plan["output_root"]), Path(plan["launch_dir"])
     if output == launch or output in launch.parents or launch in output.parents:
         raise ValueError("output_root and launch_dir must be independent fresh directories")
@@ -114,6 +115,12 @@ def load_plan(path: Path) -> dict[str, Any]:
             raise ValueError("allow_stage_reseed must be an explicit boolean")
         if item["method"] == "maas" and item.get("allow_stage_reseed") is not True:
             raise ValueError("MaAS requires explicit allow_stage_reseed=true authorization")
+        if "allow_selection_gate_waiver" in item and not isinstance(item["allow_selection_gate_waiver"], bool):
+            raise ValueError("allow_selection_gate_waiver must be an explicit boolean")
+        if item["method"] == "gdesigner" and item.get("allow_selection_gate_waiver") is not True:
+            raise ValueError("G-Designer requires explicit allow_selection_gate_waiver=true authorization")
+        if item["method"] != "gdesigner" and item.get("allow_selection_gate_waiver") is True:
+            raise ValueError("allow_selection_gate_waiver is authorized only for gdesigner")
     return plan
 
 
@@ -128,6 +135,8 @@ def runtime_environment(plan: dict[str, Any]) -> dict[str, str]:
                  "AIME_MODEL_VERIFICATION_REPORT", "AIME_DATA_DIR"):
         if not env.get(name):
             raise ValueError(f"env_file must provide {name}")
+    if any(entry["method"] == "gdesigner" for entry in plan["runs"]) and not env.get("AIME_GDESIGNER_PYTHON"):
+        raise ValueError("env_file must provide AIME_GDESIGNER_PYTHON")
     env.update({"CUDA_VISIBLE_DEVICES": plan["gpu"], "AIME_PORT": str(plan["port"]),
                 "HF_HUB_OFFLINE": "1", "TRANSFORMERS_OFFLINE": "1",
                 "OPENAI_API_KEY": env.get("OPENAI_API_KEY", "EMPTY"),
@@ -143,7 +152,7 @@ def runtime_environment(plan: dict[str, Any]) -> dict[str, str]:
                 "RPAS_MODEL_VERIFICATION_REPORT": env["AIME_MODEL_VERIFICATION_REPORT"],
                 "RPAS_MODEL_REVISION": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
                 "RPAS_MAAS_EMBEDDING_REVISION": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"})
-    for method, folder in (("AFLOW", "AFlow"), ("MAAS", "MaAS")):
+    for method, folder in (("AFLOW", "AFlow"), ("MAAS", "MaAS"), ("GDESIGNER", "GDesigner")):
         env[f"AIME_{method}_SOURCE"] = str(ROOT / "upstream" / folder)
     defaults = {"AIME_AFLOW_REQUEST_TIMEOUT_S": "600", "AIME_AFLOW_SAMPLE_TIMEOUT_S": "1200",
                 "AIME_AFLOW_CODE_TIMEOUT_S": "30", "AIME_MAAS_REQUEST_TIMEOUT_S": "600",
@@ -191,8 +200,12 @@ def uv_python(env: dict[str, str], python: str, *args: str) -> list[str]:
     return [env["AIME_UV_BIN"], "run", "--no-project", "--python", python, "python", *args]
 
 
+def core_script(method: str) -> Path:
+    return ROOT / "experiments" / ("recover_gdesigner_tests.py" if method == "gdesigner" else "recover_aime_tests.py")
+
+
 def core_command(plan: dict[str, Any], env: dict[str, str], entry: dict[str, Any], *, inspect: bool) -> list[str]:
-    args = ["-u", str(ROOT / "experiments/recover_aime_tests.py"), "--method", entry["method"],
+    args = ["-u", str(core_script(entry["method"])), "--method", entry["method"],
             "--source-run", entry["source_run"], "--run-dir", entry["run_dir"],
             "--data-dir", env["AIME_DATA_DIR"], "--baseline-root", str(ROOT / "upstream"),
             "--endpoint", f"http://127.0.0.1:{plan['port']}/v1", "--seed", "0"]
@@ -200,6 +213,8 @@ def core_command(plan: dict[str, Any], env: dict[str, str], entry: dict[str, Any
         args.append("--inspect-only")
     if entry.get("allow_stage_reseed") is True:
         args.append("--allow-stage-reseed")
+    if entry.get("allow_selection_gate_waiver") is True:
+        args.append("--allow-selection-gate-waiver")
     return uv_python(env, env[f"AIME_{entry['method'].upper()}_PYTHON"], *args)
 
 
@@ -345,7 +360,8 @@ def launch(plan_path: Path) -> int:
               "source_commit": subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True).strip(),
               "launcher_sha256": sha256(ROOT / "scripts/launch_recovery_detached.sh"),
               "worker_sha256": sha256(Path(__file__)),
-              "recovery_core_sha256": sha256(ROOT / "experiments/recover_aime_tests.py"), "protocol": PROTOCOL,
+              "recovery_core": str(core_script(plan["runs"][0]["method"])),
+              "recovery_core_sha256": sha256(core_script(plan["runs"][0]["method"])), "protocol": PROTOCOL,
               "stdin": "/dev/null", "stdout_stderr": str(directory / "run.log")}
     write_json(output / "launch_record.json", record, exclusive=True)
     command = uv_python(env, env["AIME_PYTHON"], "-u", str(Path(__file__).resolve()), "--worker", "--plan", str(saved_plan))
@@ -452,7 +468,7 @@ def worker(plan_path: Path) -> int:
                 if server.poll() is not None:
                     raise RuntimeError("vLLM exited; no additional recovery started")
                 method = entry["method"]
-                completion["stage"] = f"recover_{method}_2026"
+                completion["stage"] = f"recover_{method}_2025_2026" if method == "gdesigner" else f"recover_{method}_2026"
                 result = completion["methods"][method]
                 result.update({"status": "running", "started_at_utc": now(), "formal_status": "NOT_FORMAL_PASS"})
                 write_json(directory / "status.json", completion)

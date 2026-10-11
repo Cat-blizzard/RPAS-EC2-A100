@@ -20,6 +20,7 @@ spec = importlib.util.spec_from_file_location("aime_recovery_worker", SCRIPT)
 assert spec and spec.loader
 launcher = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(launcher)
+build_runtime_environment = launcher.runtime_environment
 
 
 @pytest.fixture
@@ -31,7 +32,8 @@ def fixture(tmp_path, monkeypatch):
     env = dict(os.environ)
     env.update({"AIME_UV_BIN": "/home/ZZD/.local/bin/uv", "AIME_PYTHON": os.environ.get("AIME_TEST_PYTHON", "/data/jxc/envs/pbfm_isaaclab/bin/python"),
                 "AIME_VLLM_BIN": "/unused/vllm", "AIME_AFLOW_PYTHON": "/unused/aflow/python",
-                "AIME_MAAS_PYTHON": "/unused/maas/python", "AIME_MODEL_PATH": str(tmp_path / "model"),
+                "AIME_MAAS_PYTHON": "/unused/maas/python", "AIME_GDESIGNER_PYTHON": "/unused/gdesigner/python",
+                "AIME_MODEL_PATH": str(tmp_path / "model"),
                 "AIME_MINILM_PATH": str(tmp_path / "embedding"), "AIME_DATA_DIR": str(tmp_path / "data"),
                 "AIME_MODEL_VERIFICATION_REPORT": str(tmp_path / "verification.json"),
                 "AIME_TEMP_DIR": str(tmp_path / "temporary"), "AIME_CACHE_DIR": str(tmp_path / "cache")})
@@ -43,7 +45,7 @@ def fixture(tmp_path, monkeypatch):
     env_file = tmp_path / "env.sh"
     env_file.write_text("export EXAMPLE=1\n")
     sources = []
-    for method in ("aflow", "maas"):
+    for method in ("aflow", "maas", "gdesigner"):
         source = tmp_path / ("source_" + method)
         source.mkdir()
         sources.append(source)
@@ -87,6 +89,32 @@ def test_launch_refuses_existing_directory_before_spawn(fixture, monkeypatch):
         launcher.launch(save())
 
 
+def test_gdesigner_plan_requires_explicit_boolean_waiver_and_cannot_mix_methods(fixture):
+    _, _, plan, save = fixture
+    aflow = plan["runs"][0]
+    gd = dict(aflow, method="gdesigner", run_dir=str(Path(plan["output_root"]) / "gdesigner"))
+    plan["runs"] = [gd]
+    for value in (None, False):
+        if value is None:
+            gd.pop("allow_selection_gate_waiver", None)
+        else:
+            gd["allow_selection_gate_waiver"] = value
+        with pytest.raises(ValueError, match="allow_selection_gate_waiver"):
+            launcher.load_plan(save())
+    gd["allow_selection_gate_waiver"] = "true"
+    with pytest.raises(ValueError, match="explicit boolean"):
+        launcher.load_plan(save())
+    gd["allow_selection_gate_waiver"] = True
+    assert launcher.load_plan(save())["runs"][0]["allow_selection_gate_waiver"] is True
+    for runs in ([gd, aflow], [gd, dict(gd)]):
+        plan["runs"] = runs
+        with pytest.raises(ValueError, match="ordered unique"):
+            launcher.load_plan(save())
+    plan["runs"] = [dict(aflow, allow_selection_gate_waiver=True)]
+    with pytest.raises(ValueError, match="only for gdesigner"):
+        launcher.load_plan(save())
+
+
 def test_server_and_core_commands_preserve_protocol_and_only_recover_2026(fixture):
     _, env, plan, _ = fixture
     server = launcher.server_command(plan, env)
@@ -100,6 +128,42 @@ def test_server_and_core_commands_preserve_protocol_and_only_recover_2026(fixtur
     assert "--inspect-only" not in core and "--allow-stage-reseed" not in core
     assert "native_aime_formal.py" not in " ".join(core)
     assert "--inspect-only" in launcher.core_command(plan, env, plan["runs"][0], inspect=True)
+
+
+def test_gdesigner_core_dispatches_only_its_authorized_supplementary_entry(fixture):
+    root, env, plan, _ = fixture
+    entry = dict(plan["runs"][0], method="gdesigner", allow_selection_gate_waiver=True)
+    for inspect in (False, True):
+        core = launcher.core_command(plan, env, entry, inspect=inspect)
+        assert core[:6] == [env["AIME_UV_BIN"], "run", "--no-project", "--python", env["AIME_GDESIGNER_PYTHON"], "python"]
+        assert str(root / "experiments/recover_gdesigner_tests.py") in core
+        assert str(root / "experiments/recover_aime_tests.py") not in core
+        assert "--allow-selection-gate-waiver" in core
+        assert "--allow-stage-reseed" not in core
+        assert ("--inspect-only" in core) is inspect
+
+
+def test_gdesigner_runtime_requires_method_python_and_preserves_request_timeout(fixture):
+    root, env, plan, _ = fixture
+    plan["runs"][0].update(method="gdesigner", allow_selection_gate_waiver=True)
+
+    def save_env(values):
+        Path(plan["env_file"]).write_text("\n".join(f"export {key}={shlex.quote(value)}" for key, value in values.items()) + "\n")
+
+    save_env(env)
+    runtime = build_runtime_environment(plan)
+    assert runtime["AIME_GDESIGNER_PYTHON"] == env["AIME_GDESIGNER_PYTHON"]
+    assert runtime["AIME_GDESIGNER_SOURCE"] == str(root / "upstream/GDesigner")
+    assert runtime["AIME_EXTERNAL_REQUEST_TIMEOUT_S"] == "600"
+    changed = dict(env, AIME_EXTERNAL_REQUEST_TIMEOUT_S="180")
+    save_env(changed)
+    with pytest.raises(ValueError, match="AIME_EXTERNAL_REQUEST_TIMEOUT_S=600"):
+        build_runtime_environment(plan)
+    missing = dict(env)
+    missing.pop("AIME_GDESIGNER_PYTHON")
+    save_env(missing)
+    with pytest.raises(ValueError, match="AIME_GDESIGNER_PYTHON"):
+        build_runtime_environment(plan)
 
 
 def test_gpu_guard_rejects_foreign_process_and_busy_port(fixture, monkeypatch):
@@ -154,7 +218,7 @@ def configure_fake_worker(fixture, monkeypatch, codes=None):
             events.append(("start", command))
 
         def wait(self):
-            is_core = any("recover_aime_tests.py" in part for part in self.command)
+            is_core = any("recover_aime_tests.py" in part or "recover_gdesigner_tests.py" in part for part in self.command)
             if is_core and "--inspect-only" not in self.command:
                 method = self.command[self.command.index("--method") + 1]
                 return (codes or {}).get(method, 0)
@@ -200,6 +264,24 @@ def test_failure_is_preserved_and_next_independent_method_runs_once(fixture, mon
     assert completion["methods"]["maas"]["status"] == "supplemental_completed"
     computes = [command for event, command in events if event == "start" and any("recover_aime_tests.py" in x for x in command) and "--inspect-only" not in command]
     assert [cmd[cmd.index("--method") + 1] for cmd in computes] == ["aflow", "maas"]
+
+
+def test_gdesigner_only_worker_evaluates_once_and_stays_not_formal_pass(fixture, monkeypatch):
+    _, _, initial, _ = fixture
+    initial["runs"][0].update(method="gdesigner", allow_selection_gate_waiver=True)
+    plan, save, events = configure_fake_worker(fixture, monkeypatch)
+    assert launcher.worker(save()) == 0
+    completion = json.loads((Path(plan["launch_dir"]) / "completion.json").read_text())
+    assert completion["status"] == "supplemental_completed"
+    assert completion["formal_status"] == "NOT_FORMAL_PASS"
+    assert list(completion["methods"]) == ["gdesigner"]
+    cores = [command for event, command in events if event == "start" and any("recover_gdesigner_tests.py" in part for part in command)]
+    assert len(cores) == 2
+    assert "--inspect-only" in cores[0] and "--inspect-only" not in cores[1]
+    assert all("--allow-selection-gate-waiver" in command for command in cores)
+    assert not any("recover_aime_tests.py" in " ".join(command) for _, command in events)
+    assert not any("aime_quality_gate" in " ".join(command) for _, command in events)
+    assert any(event == "close" and command[0] == "/unused/vllm" for event, command in events)
 
 
 def test_startup_failure_records_failure_and_cleanup_without_native_compute(fixture, monkeypatch):

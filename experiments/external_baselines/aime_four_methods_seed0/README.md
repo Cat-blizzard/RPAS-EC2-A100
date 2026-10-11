@@ -1,5 +1,11 @@
 # Four external-method AIME runner (seed 0)
 
+The [G-Designer quality-gate waiver continuation](deployment/GDESIGNER_GATE_WAIVER_2026-10-12.md)
+reuses its retained controller and selection audit, and evaluates only the
+previously unopened 2025/2026 test splits. The user explicitly waived this
+method's selection/test quality thresholds. It is a stage-reseed, quality-gate
+waiver variant, remains `NOT_FORMAL_PASS`, and preserves the original rejection.
+
 The [2026-10-11 test-stage recovery](deployment/STAGE_RECOVERY_2026-10-11.md)
 retains completed 2025 evaluations and can supplement only the unopened 2026
 test from a frozen failed AFlow/MaAS attempt. Its outputs are supplementary,
