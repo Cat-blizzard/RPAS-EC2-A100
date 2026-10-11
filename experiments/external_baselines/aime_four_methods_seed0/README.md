@@ -3,8 +3,9 @@
 The [2026-10-11 test-stage recovery](deployment/STAGE_RECOVERY_2026-10-11.md)
 retains completed 2025 evaluations and can supplement only the unopened 2026
 test from a frozen failed AFlow/MaAS attempt. Its outputs are supplementary,
-with unknown historical usage and original failure gates retained. The current
-host authorization covers only AFlow; MaAS remains deferred.
+with unknown historical usage and original failure gates retained. The user
+initially authorized AFlow, then explicitly accepted a separate MaAS stage
+continuation with seed 0 reset. Both remain supplementary results.
 
 The [single RTX 5880 Ada 48 GB host record](deployment/SINGLE_48G_2026-10-01.md)
 documents the prepared environments, model verification, runtime limits,

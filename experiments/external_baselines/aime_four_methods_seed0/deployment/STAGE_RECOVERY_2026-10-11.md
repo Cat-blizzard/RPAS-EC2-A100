@@ -6,10 +6,21 @@ process restore. Original failure records and scientific gates remain intact.
 
 ## Authorized execution
 
-The user authorized **AFlow only**, retaining the completed AIME2025 CSV and
+The initial user authorization covered **AFlow only**, retaining the completed AIME2025 CSV and
 running only the unopened AIME2026 test. MaAS continuation is not authorized:
 its checkpoint lacks RNG state and the user elected to defer stage reseeding.
 G-Designer remains rejected at D_select. ADAS continues its original worker.
+
+### Subsequent MaAS authorization
+
+Later on 2026-10-11, after disclosure of the RNG and historical-usage limits,
+the user explicitly said “好，启动吧，我接受”. This supersedes the initial
+MaAS deferral and authorizes a separate frozen-controller supplementary
+continuation: reset seed 0, reuse the original search/select/2025 artifacts,
+and compute only the unopened 2026 30 rows. The MaAS-only launch plan records
+`allow_stage_reseed: true`; the former AFlow plan remains unchanged.
+No complete formal acceptance is asserted. G-Designer remains stopped and
+the original ADAS worker continues independently.
 
 ## Cause and correction
 
@@ -48,7 +59,8 @@ evaluator. Row order, gold checks, frozen data and thresholds are unchanged.
 
 - Original AFlow AIME2025: 19/30 correct, two sample timeouts (6.67%), exceeding
   the original 5% failure limit. Those failed rows remain included.
-- Original MaAS AIME2025: 15/30 correct, one empty output. It is not continued.
+- Original MaAS AIME2025: 15/30 correct, one empty output. Those 30 outputs
+  are retained; only 2026 is continued under the subsequent authorization.
 - Precise historical search/2025 resource usage was not persisted before the
   scoring crash. It remains `null`, never reconstructed from cost or throughput.
 - AFlow's original lock records candidate round/selection score, not the graph
@@ -79,7 +91,8 @@ evaluator. Row order, gold checks, frozen data and thresholds are unchanged.
 
 Prepare a JSON plan containing `package_root`, `env_file`, one idle `gpu`,
 unused `port`, fresh `output_root`, fresh `launch_dir`, and `runs` containing
-only the authorized AFlow source/output pair. Start with:
+only the currently authorized method/source/output pair. A MaAS entry requires
+the explicitly authorized `allow_stage_reseed: true`. Start with:
 
 ```bash
 bash scripts/launch_recovery_detached.sh --plan /absolute/path/recovery_plan.json
