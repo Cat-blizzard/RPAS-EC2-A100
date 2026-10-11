@@ -1558,7 +1558,7 @@ def run_aflow(args: argparse.Namespace, search_rows: list[dict[str, Any]], selec
                     log_dir=log_dir,
                     is_test=True,
                 )
-            shared_metrics = shared_aime_metrics(log_dir, test_rows)
+            shared_metrics = shared_aime_metrics(log_dir, native_math_rows(test_rows, Path(filename).stem))
             output_audit = audit_aflow_outputs(log_dir)
             resource_usage = phase_snapshot(aflow_usage, test_phase)
             total_tokens = int(resource_usage["total_tokens"])
@@ -2158,7 +2158,9 @@ def run_maas(args: argparse.Namespace, search_rows: list[dict[str, Any]], select
             test_phase = f"test:{test_name}"
             with phase_scope(test_phase, maas_usage["phase_wall_seconds"]):
                 native_score = float(test_loop.run_until_complete(optimizer.test()))
-            shared_metrics = shared_aime_metrics(maas_eval_dir, expected_test_rows)
+            shared_metrics = shared_aime_metrics(
+                maas_eval_dir, native_math_rows(expected_test_rows, Path(filename).stem)
+            )
             output_audit = audit_aflow_outputs(maas_eval_dir)
             resource_usage = phase_snapshot(maas_usage, test_phase)
             total_tokens = int(resource_usage["total_tokens"])
