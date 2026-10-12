@@ -19,6 +19,10 @@ AFlow and MaAS reuse frozen search/select artifacts and have incomplete historic
 
 ADAS completed its 30-generation search and evaluated 26 candidates. Its best D_select candidate scored 21/30, but its failure and truncation rates exceeded the original 5% gate, so D_test was never opened.
 
+The ADAS recovery source artifacts needed by the delivered continuation are at
+`adas/recovery_source/`; this is the repository-local copy of the original
+failed run's manifest, selection audit and search archive.
+
 ## Reproducibility
 
 The bundle keeps the frozen controller/candidate artifacts, manifests, selection locks/access audits, per-request ledgers, per-split CSV/log files, and launch completion records. Model weights, embeddings, upstream checkouts, Python caches, temporary GPU/server logs, and credentials are intentionally excluded.

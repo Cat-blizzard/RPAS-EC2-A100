@@ -14,9 +14,18 @@ run. Search and D_select are not repeated.
 
 ## Frozen candidate
 
-Source run:
+The original source run was on the execution host at:
 
 `/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/adas_attempt_v2/adas_gdesigner/adas/seed_0`
+
+The required immutable source artifacts are now also delivered inside this
+repository at:
+
+`results/aime_four_methods_seed0_20261012/adas/recovery_source/`
+
+Use that repository-local directory as `--source-run` after cloning. It has
+exactly the three files required by the recovery entry; the original absolute
+path above is retained only as provenance.
 
 The retained search has 30 generations and 26 archive candidates. The highest
 scoring candidate is `archive_21`, named **Constraint-Verified Iteration**:
@@ -58,7 +67,9 @@ evidence and use an explicitly reviewed fresh recovery session.
 The prepared plan uses GPU 8 and port 18183, which were observed free while
 preparing this document. The launcher performs its own occupancy and port
 checks immediately before starting and stops if another process claims the card.
-The plan contains only ADAS with `allow_selection_gate_waiver: true`:
+The plan contains only ADAS with `allow_selection_gate_waiver: true`. Before
+launching from a clone, replace its `source_run`, `package_root`, `env_file`,
+`output_root` and `launch_dir` with paths on that host:
 
 ```bash
 bash scripts/launch_recovery_detached.sh \

@@ -9,7 +9,7 @@
   "runs": [
     {
       "method": "adas",
-      "source_run": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/adas_attempt_v2/adas_gdesigner/adas/seed_0",
+      "source_run": "/absolute/path/to/checkout/experiments/external_baselines/aime_four_methods_seed0/results/aime_four_methods_seed0_20261012/adas/recovery_source",
       "run_dir": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/outputs/adas_dtest_recovery_seed0_20261012/adas/seed_0",
       "allow_selection_gate_waiver": true,
       "adas_generations": 30
