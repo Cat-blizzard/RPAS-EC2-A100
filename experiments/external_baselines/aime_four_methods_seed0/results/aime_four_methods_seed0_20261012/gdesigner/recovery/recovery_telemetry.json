@@ -1,0 +1,50 @@
+{
+  "request_ledger_audit": {
+    "calls": 300,
+    "failed_or_cancelled_calls": 0,
+    "reported_response_usage": {
+      "completion_tokens": 878937,
+      "prompt_tokens": 1332276,
+      "total_tokens": 2211213
+    },
+    "unknown_usage_calls": 0,
+    "usage_complete": true
+  },
+  "runtime": {
+    "context_limit": 16384,
+    "finish_reason_counts": {
+      "length": 70,
+      "stop": 230
+    },
+    "guard_events": 300,
+    "max_concurrency": 8,
+    "output_limit": 6144,
+    "phases": {
+      "test:aime_2025": {
+        "calls": 150,
+        "completion_tokens": 427802,
+        "completion_truncated": 34,
+        "failed_calls": 0,
+        "prompt_tokens": 645329,
+        "total_tokens": 1073131
+      },
+      "test:aime_2026": {
+        "calls": 150,
+        "completion_tokens": 451135,
+        "completion_truncated": 36,
+        "failed_calls": 0,
+        "prompt_tokens": 686947,
+        "total_tokens": 1138082
+      }
+    },
+    "request_timeout_s": 600.0,
+    "totals": {
+      "calls": 300,
+      "completion_tokens": 878937,
+      "completion_truncated": 70,
+      "failed_calls": 0,
+      "prompt_tokens": 1332276,
+      "total_tokens": 2211213
+    }
+  }
+}

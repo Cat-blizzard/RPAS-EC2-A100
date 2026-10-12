@@ -1,0 +1,362 @@
+{
+  "phase": "test:aime_2026:Q",
+  "point": {
+    "accuracy": 0.8333333333333334,
+    "answer_parser": "answer_protocol_v4.extract_aime_answer",
+    "avg_cost": 14343.7,
+    "calls": 71,
+    "completion_tokens": 234816,
+    "correct": 25,
+    "cost_unit": "model_tokens",
+    "failed_calls": 0,
+    "mean_score_0_1_2": 1.8,
+    "native_avg_cost": 0.0,
+    "native_score": 0.8333333333333334,
+    "native_total_cost": 0.0,
+    "num_examples": 30,
+    "output_audit": {
+      "csv": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/outputs/aime_stage_recovery_seed0_20261011/aflow/seed_0/test_2026/0.83333_20261011_134647.csv",
+      "csv_rows": 30,
+      "empty_predictions": 0,
+      "failure_fraction": 0.03333333333333333,
+      "failure_markers": [
+        "AFlow sample timeout"
+      ],
+      "failure_predictions": 1,
+      "sample_timeouts": 1
+    },
+    "phase": "test:aime_2026:Q",
+    "prompt_tokens": 195495,
+    "request_failure_fraction": 0.0,
+    "request_ledger_audit": {
+      "calls": 71,
+      "failed_or_cancelled_calls": 1,
+      "reported_response_usage": {
+        "completion_tokens": 234816,
+        "prompt_tokens": 195495,
+        "total_tokens": 430311
+      },
+      "unknown_usage_calls": 1,
+      "usage_complete": false
+    },
+    "resource_audit_status": "REPORTED_RESPONSES_ONLY",
+    "resource_usage": {
+      "calls": 71,
+      "completion_tokens": 234816,
+      "failed_calls": 0,
+      "prompt_tokens": 195495,
+      "total_tokens": 430311
+    },
+    "rows": [
+      {
+        "correct": true,
+        "gold": "277",
+        "id": "aime_2026:1",
+        "parser_valid": true,
+        "prediction": "277",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "62",
+        "id": "aime_2026:2",
+        "parser_valid": true,
+        "prediction": "62",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "79",
+        "id": "aime_2026:3",
+        "parser_valid": true,
+        "prediction": "79",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "70",
+        "id": "aime_2026:4",
+        "parser_valid": true,
+        "prediction": "70",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "65",
+        "id": "aime_2026:5",
+        "parser_valid": true,
+        "prediction": "65",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "441",
+        "id": "aime_2026:6",
+        "parser_valid": true,
+        "prediction": "441",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "396",
+        "id": "aime_2026:7",
+        "parser_valid": true,
+        "prediction": "396",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "244",
+        "id": "aime_2026:8",
+        "parser_valid": true,
+        "prediction": "244",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "29",
+        "id": "aime_2026:9",
+        "parser_valid": true,
+        "prediction": "29",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": false,
+        "gold": "156",
+        "id": "aime_2026:10",
+        "parser_valid": true,
+        "prediction": "21",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": false,
+        "gold": "896",
+        "id": "aime_2026:11",
+        "parser_valid": true,
+        "prediction": "216",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": true,
+        "gold": "161",
+        "id": "aime_2026:12",
+        "parser_valid": true,
+        "prediction": "161",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "39",
+        "id": "aime_2026:13",
+        "parser_valid": true,
+        "prediction": "39",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "681",
+        "id": "aime_2026:14",
+        "parser_valid": true,
+        "prediction": "681",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": false,
+        "gold": "83",
+        "id": "aime_2026:15",
+        "parser_valid": true,
+        "prediction": "1",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": true,
+        "gold": "178",
+        "id": "aime_2026:16",
+        "parser_valid": true,
+        "prediction": "178",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": false,
+        "gold": "243",
+        "id": "aime_2026:17",
+        "parser_valid": true,
+        "prediction": "171",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": true,
+        "gold": "503",
+        "id": "aime_2026:18",
+        "parser_valid": true,
+        "prediction": "503",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "279",
+        "id": "aime_2026:19",
+        "parser_valid": true,
+        "prediction": "279",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "190",
+        "id": "aime_2026:20",
+        "parser_valid": true,
+        "prediction": "190",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "50",
+        "id": "aime_2026:21",
+        "parser_valid": true,
+        "prediction": "50",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "754",
+        "id": "aime_2026:22",
+        "parser_valid": true,
+        "prediction": "754",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "245",
+        "id": "aime_2026:23",
+        "parser_valid": true,
+        "prediction": "245",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "669",
+        "id": "aime_2026:24",
+        "parser_valid": true,
+        "prediction": "669",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "850",
+        "id": "aime_2026:25",
+        "parser_valid": true,
+        "prediction": "850",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "132",
+        "id": "aime_2026:26",
+        "parser_valid": true,
+        "prediction": "132",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "223",
+        "id": "aime_2026:27",
+        "parser_valid": true,
+        "prediction": "223",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": false,
+        "gold": "107",
+        "id": "aime_2026:28",
+        "parser_valid": false,
+        "prediction": "",
+        "score": 0.0,
+        "score_0_1_2": 0
+      },
+      {
+        "correct": true,
+        "gold": "157",
+        "id": "aime_2026:29",
+        "parser_valid": true,
+        "prediction": "157",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "393",
+        "id": "aime_2026:30",
+        "parser_valid": true,
+        "prediction": "393",
+        "score": 1.0,
+        "score_0_1_2": 2
+      }
+    ],
+    "sample_gate_pass": true,
+    "score": 0.8333333333333334,
+    "score_0_1_2": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      1,
+      1,
+      2,
+      2,
+      2,
+      1,
+      2,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      0,
+      2,
+      2
+    ],
+    "total_cost": 430311,
+    "total_tokens": 430311,
+    "truncation_fraction": 0.3380281690140845,
+    "valid_answer_rate": 0.9666666666666667
+  },
+  "status": "complete"
+}

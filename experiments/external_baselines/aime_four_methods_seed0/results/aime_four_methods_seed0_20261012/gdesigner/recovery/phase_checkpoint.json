@@ -1,0 +1,8 @@
+{
+  "completed_test_splits": [
+    "aime_2025",
+    "aime_2026"
+  ],
+  "phase": "test:aime_2026",
+  "status": "phase_completed"
+}

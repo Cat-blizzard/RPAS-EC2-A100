@@ -1,0 +1,28 @@
+{
+  "schema": "aime_single_detached_launch_v1",
+  "method": "adas",
+  "status": "started",
+  "started_at_utc": "2026-10-10T12:33:20.912193+00:00",
+  "source_root": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0",
+  "source_commit": "a6e1a13fa4f9ecd66f390892038b403f0969f081",
+  "launcher_sha256": "a5eeecf336ef07c59f5950e43dc9b64676ee29c1c07af278b11c6fd20dbe3b03",
+  "run_pair_sha256": "6b99ad88b0a73dced5c32e97450faef1e86eacfc2a8e5d7f97e00d09f232037f",
+  "output_root": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/adas_attempt_v2",
+  "diagnostic_root": "/data/jxc/tmp/rpas/aime_parallel_20261010/adas/diagnostics_v2",
+  "gpu": "2",
+  "port": "18181",
+  "stdin": "/dev/null",
+  "stdout_stderr": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0/logs/parallel_adas_20261010_v2/run.log",
+  "protocol": {
+    "search_seed": 0,
+    "data_seed": 2026,
+    "D_search": 60,
+    "D_select": 30,
+    "D_test_each_year": 30,
+    "context": 16384,
+    "max_tokens": 6144,
+    "concurrency": 8,
+    "max_num_seqs": 8
+  },
+  "note": "Started records establish no result; completion requires diagnostic, formal runner, and native gate verification."
+}

@@ -1,0 +1,556 @@
+{
+  "calls": 449,
+  "code_execution_calls": 77,
+  "code_execution_cancellations": 0,
+  "code_execution_errors": 13,
+  "code_execution_timeouts": 1,
+  "code_executor_adapter": {
+    "bound_modules": [
+      "maas.ext.maas.scripts.optimized.MATH.train.template.operator",
+      "maas.ext.maas.scripts.optimized.MATH.test.template.operator"
+    ],
+    "template_repairs": [
+      {
+        "patched_sha256": "b76dd3ffb04664ff5915beac3a01a4bff172a152a633b69b1d8eaadfd62869e1",
+        "path": "maas/ext/maas/scripts/optimized/MATH/test/template/operator.py",
+        "source_sha256": "b76dd3ffb04664ff5915beac3a01a4bff172a152a633b69b1d8eaadfd62869e1"
+      },
+      {
+        "patched_sha256": "b76dd3ffb04664ff5915beac3a01a4bff172a152a633b69b1d8eaadfd62869e1",
+        "path": "maas/ext/maas/scripts/optimized/MATH/train/template/operator.py",
+        "source_sha256": "b76dd3ffb04664ff5915beac3a01a4bff172a152a633b69b1d8eaadfd62869e1"
+      },
+      {
+        "patched_sha256": "b76dd3ffb04664ff5915beac3a01a4bff172a152a633b69b1d8eaadfd62869e1",
+        "path": "workspace/rpas_aime_native/MATH/test/template/operator.py",
+        "source_sha256": "b76dd3ffb04664ff5915beac3a01a4bff172a152a633b69b1d8eaadfd62869e1"
+      },
+      {
+        "patched_sha256": "b76dd3ffb04664ff5915beac3a01a4bff172a152a633b69b1d8eaadfd62869e1",
+        "path": "workspace/rpas_aime_native/MATH/train/template/operator.py",
+        "source_sha256": "b76dd3ffb04664ff5915beac3a01a4bff172a152a633b69b1d8eaadfd62869e1"
+      }
+    ],
+    "timeout_s": 60.0,
+    "version": "bounded_programmer_v2_all_template_paths",
+    "workers_per_event_loop": 8
+  },
+  "completion_tokens": 1729606,
+  "completion_truncated": 187,
+  "context_guard": {
+    "calls_seen": 449,
+    "compacted_calls": 64,
+    "compacted_input_tokens": 848881,
+    "context_limit": 16384,
+    "events_sample": [
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8067,
+        "original_input_tokens": 9292,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8187,
+        "original_input_tokens": 11294,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8067,
+        "original_input_tokens": 13650,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8185,
+        "original_input_tokens": 26984,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8066,
+        "original_input_tokens": 14914,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8065,
+        "original_input_tokens": 11155,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8067,
+        "original_input_tokens": 18834,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8191,
+        "original_input_tokens": 31135,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8192,
+        "original_input_tokens": 31180,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8189,
+        "original_input_tokens": 41020,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8067,
+        "original_input_tokens": 12691,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8067,
+        "original_input_tokens": 24982,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8187,
+        "original_input_tokens": 43435,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8188,
+        "original_input_tokens": 43480,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8065,
+        "original_input_tokens": 18768,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8066,
+        "original_input_tokens": 25069,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 7358,
+        "original_input_tokens": 8441,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8188,
+        "original_input_tokens": 27910,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8067,
+        "original_input_tokens": 12773,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8068,
+        "original_input_tokens": 12880,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8068,
+        "original_input_tokens": 12620,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8192,
+        "original_input_tokens": 15781,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8068,
+        "original_input_tokens": 12648,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8069,
+        "original_input_tokens": 12925,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8070,
+        "original_input_tokens": 12665,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 7674,
+        "original_input_tokens": 13544,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8069,
+        "original_input_tokens": 12693,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8064,
+        "original_input_tokens": 25068,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8066,
+        "original_input_tokens": 24990,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8192,
+        "original_input_tokens": 23256,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8067,
+        "original_input_tokens": 25035,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 7905,
+        "original_input_tokens": 13348,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8067,
+        "original_input_tokens": 10960,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8068,
+        "original_input_tokens": 12649,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8068,
+        "original_input_tokens": 12772,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8069,
+        "original_input_tokens": 12694,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8068,
+        "original_input_tokens": 12696,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8068,
+        "original_input_tokens": 11699,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8070,
+        "original_input_tokens": 12741,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8190,
+        "original_input_tokens": 33066,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8185,
+        "original_input_tokens": 54103,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8189,
+        "original_input_tokens": 17726,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8191,
+        "original_input_tokens": 37473,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8191,
+        "original_input_tokens": 11964,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8187,
+        "original_input_tokens": 24704,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8184,
+        "original_input_tokens": 40353,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 6535,
+        "original_input_tokens": 8692,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8067,
+        "original_input_tokens": 10782,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8068,
+        "original_input_tokens": 18576,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8068,
+        "original_input_tokens": 12881,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 3571,
+        "original_input_tokens": 18216,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8069,
+        "original_input_tokens": 18621,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8069,
+        "original_input_tokens": 12926,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8067,
+        "original_input_tokens": 9781,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8188,
+        "original_input_tokens": 41227,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8190,
+        "original_input_tokens": 43223,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8065,
+        "original_input_tokens": 21259,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 7846,
+        "original_input_tokens": 12894,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8192,
+        "original_input_tokens": 18395,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8189,
+        "original_input_tokens": 30263,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8190,
+        "original_input_tokens": 39883,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8187,
+        "original_input_tokens": 38581,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8065,
+        "original_input_tokens": 27974,
+        "requested_max_tokens": 6144
+      },
+      {
+        "compacted": true,
+        "effective_max_tokens": 6144,
+        "final_input_tokens": 8190,
+        "original_input_tokens": 26359,
+        "requested_max_tokens": 6144
+      }
+    ],
+    "final_input_tokens": 1177109,
+    "max_input_tokens_seen": 54103,
+    "original_input_tokens": 2025990,
+    "target_input_tokens": 8192,
+    "version": "maas_context_guard_v1"
+  },
+  "failed_calls": 0,
+  "finish_reason_counts": {
+    "length": 187,
+    "stop": 252
+  },
+  "maas_xml_exhausted_samples": 6,
+  "maas_xml_invalid_responses": 16,
+  "maas_xml_max_attempts": 2,
+  "maas_xml_recovered_samples": 3,
+  "phase_totals": {
+    "search": {
+      "calls": 0,
+      "completion_tokens": 0,
+      "failed_calls": 0,
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    },
+    "select": {
+      "calls": 0,
+      "completion_tokens": 0,
+      "failed_calls": 0,
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    },
+    "test:aime_2025": {
+      "calls": 0,
+      "completion_tokens": 0,
+      "failed_calls": 0,
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    },
+    "test:aime_2026": {
+      "calls": 449,
+      "completion_tokens": 1729606,
+      "failed_calls": 0,
+      "prompt_tokens": 1149410,
+      "total_tokens": 2879016
+    }
+  },
+  "phase_wall_seconds": {
+    "test:aime_2026": 6364.234258468961
+  },
+  "prompt_tokens": 1149410,
+  "request_ledger_audit": {
+    "calls": 449,
+    "failed_or_cancelled_calls": 10,
+    "reported_response_usage": {
+      "completion_tokens": 1729606,
+      "prompt_tokens": 1149410,
+      "total_tokens": 2879016
+    },
+    "unknown_usage_calls": 10,
+    "usage_complete": false
+  },
+  "total_tokens": 2879016
+}

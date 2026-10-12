@@ -1,0 +1,100 @@
+{
+  "started_at_utc": "2026-10-10T12:35:16.400424+00:00",
+  "host": "ubuntu-SYS-521GE-TNRT",
+  "project_root": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0",
+  "project_git_commit": "a6e1a13fa4f9ecd66f390892038b403f0969f081",
+  "project_sha256sums_sha256": "564217965310ea2a40839a8c04b6b31f340dc04796f9171b3c4e895f19367d6f",
+  "server_pid": 2125239,
+  "gpu_monitor_pid": 2125246,
+  "server_log": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0/logs/vllm-adas-18181-2VeP0NgI.log",
+  "gpu_log": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0/logs/gpu-adas-18181-upWu4GR5.csv",
+  "port": 18181,
+  "server_bind": "127.0.0.1",
+  "server_binary": "/data/jxc/envs/rpas-serve/bin/vllm",
+  "model_path": "/data/jxc/models/Qwen3.5-9B",
+  "model_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "embedding_path": "/data/jxc/models/all-MiniLM-L6-v2",
+  "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "model_verification_report": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0/logs/local_model_verification_parallel_20261010.json",
+  "model_verification_report_sha256": "5f88d47f0993baae7718eae4b2131fbc7b01df9db1efe6e1e471b8429e67c654",
+  "server_settings": {
+    "served_model_name": "Qwen/Qwen3.5-9B",
+    "dtype": "bfloat16",
+    "language_model_only": true,
+    "tensor_parallel_size": 1,
+    "max_model_len": 16384,
+    "max_num_seqs": 8,
+    "max_num_batched_tokens": 16384,
+    "gpu_memory_utilization": 0.92,
+    "reasoning_parser": "qwen3",
+    "enable_prefix_caching": true
+  },
+  "python_paths": {
+    "serve": "/data/jxc/envs/rpas-serve/bin/python",
+    "aflow": "/data/jxc/envs/rpas-aflow/bin/python",
+    "maas": "/data/jxc/envs/rpas-maas/bin/python",
+    "adas": "/data/jxc/envs/rpas-aime-adas/bin/python",
+    "gdesigner": "/data/jxc/envs/rpas-aime-gdesigner/bin/python"
+  },
+  "package_versions": {
+    "serve": {
+      "torch": "2.10.0+cu130",
+      "transformers": "4.57.6",
+      "vllm": "0.17.0",
+      "openai": "2.24.0",
+      "numpy": "2.2.6"
+    },
+    "aflow": {
+      "torch": "2.10.0+cu130",
+      "transformers": "4.57.6",
+      "openai": "1.82.0",
+      "numpy": "2.0.2",
+      "pandas": "2.2.3"
+    },
+    "maas": {
+      "torch": "2.10.0+cu130",
+      "transformers": "4.57.6",
+      "openai": "1.82.0",
+      "sentence-transformers": "5.7.0",
+      "numpy": "1.26.4",
+      "pandas": "3.0.6"
+    },
+    "adas": {
+      "transformers": "4.57.6",
+      "openai": "1.82.0",
+      "numpy": "1.26.4",
+      "pandas": "3.0.6"
+    },
+    "gdesigner": {
+      "torch": "2.10.0+cu130",
+      "transformers": "4.57.6",
+      "openai": "1.82.0",
+      "sentence-transformers": "5.7.0",
+      "numpy": "1.26.4",
+      "pandas": "3.0.6"
+    }
+  },
+  "pair": "adas",
+  "runtime_overrides": {
+    "AIME_AFLOW_REQUEST_TIMEOUT_S": "600",
+    "AIME_AFLOW_SAMPLE_TIMEOUT_S": "1200",
+    "AIME_AFLOW_CODE_TIMEOUT_S": "30",
+    "AIME_MAAS_REQUEST_TIMEOUT_S": "600",
+    "AIME_MAAS_SAMPLE_TIMEOUT_S": "1500",
+    "AIME_MAAS_SAMPLE_RETRIES": "3",
+    "AIME_MAAS_CODE_TIMEOUT_S": "60",
+    "AIME_EXTERNAL_REQUEST_TIMEOUT_S": "600"
+  },
+  "gpu": [
+    "0, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 558 MiB, 580.178.04",
+    "1, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 27390 MiB, 580.178.04",
+    "2, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 21 MiB, 580.178.04",
+    "3, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 47841 MiB, 580.178.04",
+    "4, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 33560 MiB, 580.178.04",
+    "5, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 33561 MiB, 580.178.04",
+    "6, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 33573 MiB, 580.178.04",
+    "7, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 33570 MiB, 580.178.04",
+    "8, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 15619 MiB, 580.178.04",
+    "9, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 21 MiB, 580.178.04"
+  ]
+}

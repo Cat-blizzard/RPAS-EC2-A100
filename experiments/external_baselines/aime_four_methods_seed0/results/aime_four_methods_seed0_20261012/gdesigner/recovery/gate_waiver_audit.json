@@ -1,0 +1,46 @@
+{
+  "schema": "aime_gdesigner_quality_gate_waiver_v1",
+  "method": "gdesigner",
+  "selection": {
+    "phase": "select",
+    "waived": true,
+    "original_failure_limit": 0.05,
+    "original_gate_passed": false,
+    "observed_rates": {
+      "failure_fraction": 0.1,
+      "request_failure_fraction": 0.0,
+      "truncation_fraction": 0.28
+    },
+    "authorization": "user explicitly requested G-Designer continuation without quality thresholds",
+    "acceptance_status": "NOT_FORMAL_PASS"
+  },
+  "test": {
+    "aime_2025": {
+      "phase": "test:aime_2025",
+      "waived": true,
+      "original_failure_limit": 0.05,
+      "original_gate_passed": false,
+      "observed_rates": {
+        "failure_fraction": 0.06666666666666667,
+        "request_failure_fraction": 0.0,
+        "truncation_fraction": 0.22666666666666666
+      },
+      "authorization": "user explicitly requested G-Designer continuation without quality thresholds",
+      "acceptance_status": "NOT_FORMAL_PASS"
+    },
+    "aime_2026": {
+      "phase": "test:aime_2026",
+      "waived": true,
+      "original_failure_limit": 0.05,
+      "original_gate_passed": false,
+      "observed_rates": {
+        "failure_fraction": 0.03333333333333333,
+        "request_failure_fraction": 0.0,
+        "truncation_fraction": 0.24
+      },
+      "authorization": "user explicitly requested G-Designer continuation without quality thresholds",
+      "acceptance_status": "NOT_FORMAL_PASS"
+    }
+  },
+  "acceptance_status": "NOT_FORMAL_PASS"
+}

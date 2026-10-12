@@ -1,0 +1,13 @@
+{
+  "schema": "aime_method_launcher_attempt_v1",
+  "method": "adas",
+  "kind": "formal",
+  "status": "failed",
+  "recorded_at_utc": "2026-10-11T21:24:26.834950+00:00",
+  "source_root": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0",
+  "run_session_record": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0/logs/vllm-adas-18181-2VeP0NgI.json",
+  "preflight_exit_code": 0,
+  "compute_exit_code": 1,
+  "quality_gate_exit_code": null,
+  "note": "Only a successful computation and unchanged native quality gate establish a formal pass."
+}

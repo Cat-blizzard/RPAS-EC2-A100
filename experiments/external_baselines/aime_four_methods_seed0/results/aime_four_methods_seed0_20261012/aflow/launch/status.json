@@ -1,0 +1,121 @@
+{
+  "schema": "aime_supplemental_recovery_completion_v1",
+  "status": "supplemental_completed",
+  "classification": "supplemental",
+  "formal_status": "NOT_FORMAL_PASS",
+  "started_at_utc": "2026-10-11T05:24:20.842649+00:00",
+  "methods": {
+    "aflow": {
+      "source_run": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/aflow_attempt_v2/aflow_maas/aflow/seed_0",
+      "run_dir": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/outputs/aime_stage_recovery_seed0_20261011/aflow/seed_0",
+      "inspect_exit_code": 0,
+      "status": "supplemental_completed",
+      "started_at_utc": "2026-10-11T05:25:18.618546+00:00",
+      "formal_status": "NOT_FORMAL_PASS",
+      "worker_identity": {
+        "pid": 2054237,
+        "starttime_ticks": 146119882,
+        "session": 2054237,
+        "state": "R",
+        "cmdline": ""
+      },
+      "compute_exit_code": 0,
+      "finished_at_utc": "2026-10-11T05:46:49.237035+00:00"
+    }
+  },
+  "stage": "complete",
+  "gpu_guard": {
+    "gpu_index": "9",
+    "gpu_uuid": "GPU-d86528b1-67d4-d67f-db2c-ccae580a1267",
+    "memory_used_mib": 18,
+    "memory_total_mib": 49140,
+    "compute_pids": [],
+    "checked_at_utc": "2026-10-11T05:24:21.036103+00:00"
+  },
+  "model_verification": {
+    "verification_report": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/local_model_verification_recovery_20261011.json",
+    "verification_report_sha256": "3efb15e4d9abf20d9a67441c41e83875f602d0be4238c4c7291d2530d9e645e9",
+    "manifest_sha256": "9a258051428a4c2a391a10274d372e7e28579abb5c2a39bb5fd04ba57fc9a79c",
+    "note": "Uses the pinned existing SHA verification report; file existence and sizes rechecked."
+  },
+  "gpu_guard_before_start": {
+    "gpu_index": "9",
+    "gpu_uuid": "GPU-d86528b1-67d4-d67f-db2c-ccae580a1267",
+    "memory_used_mib": 18,
+    "memory_total_mib": 49140,
+    "compute_pids": [],
+    "checked_at_utc": "2026-10-11T05:24:35.562797+00:00"
+  },
+  "server_identity": {
+    "pid": 1549178,
+    "starttime_ticks": 146115576,
+    "session": 1549178,
+    "state": "R",
+    "cmdline": "/data/jxc/envs/rpas-serve/bin/python /data/jxc/envs/rpas-serve/bin/vllm serve /data/jxc/models/Qwen3.5-9B --served-model-name Qwen/Qwen3.5-9B --host 127.0.0.1 --port 18182 --tensor-parallel-size 1 --dtype bfloat16 --max-model-len 16384 --max-num-seqs 8 --max-num-batched-tokens 16384 --gpu-memory-utilization 0.92 --enable-prefix-caching --reasoning-parser qwen3 --language-model-only"
+  },
+  "gpu_monitor_identity": {
+    "pid": 1549180,
+    "starttime_ticks": 146115576,
+    "session": 1549180,
+    "state": "R",
+    "cmdline": "nvidia-smi --id 9 --query-gpu=timestamp,index,memory.used,utilization.gpu --format=csv -lms 1000"
+  },
+  "server_command": [
+    "/data/jxc/envs/rpas-serve/bin/vllm",
+    "serve",
+    "/data/jxc/models/Qwen3.5-9B",
+    "--served-model-name",
+    "Qwen/Qwen3.5-9B",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18182",
+    "--tensor-parallel-size",
+    "1",
+    "--dtype",
+    "bfloat16",
+    "--max-model-len",
+    "16384",
+    "--max-num-seqs",
+    "8",
+    "--max-num-batched-tokens",
+    "16384",
+    "--gpu-memory-utilization",
+    "0.92",
+    "--enable-prefix-caching",
+    "--reasoning-parser",
+    "qwen3",
+    "--language-model-only"
+  ],
+  "service_environment": {
+    "CUDA_VISIBLE_DEVICES": "9",
+    "AIME_MAX_MODEL_LEN": "16384",
+    "AIME_MAX_NUM_SEQS": "8",
+    "AIME_MAX_NUM_BATCHED_TOKENS": "16384",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "HF_HOME": "/data/jxc/cache/rpas_parallel_20261010/aflow/huggingface",
+    "VLLM_CACHE_ROOT": "/data/jxc/cache/rpas_parallel_20261010/aflow/vllm",
+    "TMPDIR": "/data/jxc/tmp/rpas/aime_stage_recovery_20261011/temp"
+  },
+  "run_session_record": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/recovery_aflow_20261011/run_session.json",
+  "run_session_record_sha256": "f08b168787c9876084c71fb42fbb8dc16bbc4d7281f6cdbacc30eb1c76d84681",
+  "endpoint_warmup": {
+    "status": "passed",
+    "timeout_s": 300,
+    "max_tokens": 16,
+    "max_retries": 0,
+    "temperature": 0,
+    "enable_thinking": false,
+    "elapsed_s": 10.329751413082704,
+    "usage": {
+      "prompt_tokens": 16,
+      "total_tokens": 18,
+      "completion_tokens": 2,
+      "prompt_tokens_details": null
+    },
+    "disposable_not_test_metric": true
+  },
+  "exit_code": 0,
+  "finished_at_utc": "2026-10-11T05:46:50.516976+00:00"
+}

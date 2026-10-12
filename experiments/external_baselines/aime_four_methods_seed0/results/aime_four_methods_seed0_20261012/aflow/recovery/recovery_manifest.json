@@ -1,0 +1,421 @@
+{
+  "baseline_provenance": {
+    "clean_worktree": true,
+    "commit": "3f457218fc716093fe53f6df8a5d5e6379d66346",
+    "origin": "https://github.com/FoundationAgents/AFlow.git",
+    "python_tree_sha256": "fcdfa2e8e4fc313b36d8d5a9d204d71e4a605ffd8a4de45b9befbdb396c621b4",
+    "repository": "https://github.com/FoundationAgents/AFlow.git"
+  },
+  "claim": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/aflow_attempt_v2/aflow_maas/aflow/test_recovery_claims/1e423466b9f341d598e3aa436548ad64dc34110cdc766d804a68896111bd0fc3.json",
+  "controls": {
+    "AIME_AFLOW_CODE_TIMEOUT_S": "30",
+    "AIME_AFLOW_REQUEST_TIMEOUT_S": "600",
+    "AIME_AFLOW_SAMPLE_TIMEOUT_S": "1200",
+    "AIME_MAAS_CODE_TIMEOUT_S": "60",
+    "AIME_MAAS_REQUEST_TIMEOUT_S": "600",
+    "AIME_MAAS_SAMPLE_RETRIES": "3",
+    "AIME_MAAS_SAMPLE_TIMEOUT_S": "1500",
+    "AIME_MAX_NUM_SEQS": "8",
+    "AIME_TP_SIZE": "1",
+    "concurrency": 8,
+    "data_seed": 2026,
+    "max_model_len": 16384,
+    "max_tokens": 6144,
+    "model": "Qwen/Qwen3.5-9B",
+    "seed": 0,
+    "temperature": 0.0,
+    "thinking": false,
+    "top_p": 1.0
+  },
+  "finished_at_utc": "2026-10-11T05:46:47.544637+00:00",
+  "formal_acceptance": "NOT_FORMAL_PASS",
+  "formal_quality_gate": "NOT_RUN_INCOMPLETE_HISTORICAL_USAGE",
+  "frozen_selection": {
+    "E": {
+      "round": 9,
+      "score": 0.7
+    },
+    "Q": {
+      "round": 9,
+      "score": 0.7
+    }
+  },
+  "historical_candidate_hash_lock": "round_only; Python hashes first recorded at recovery",
+  "method": "aflow",
+  "missing_historical_usage": [
+    "search",
+    "test:aime_2025"
+  ],
+  "model_verification_report": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/local_model_verification_recovery_20261011.json",
+  "model_verification_report_sha256": "3efb15e4d9abf20d9a67441c41e83875f602d0be4238c4c7291d2530d9e645e9",
+  "native_adapter_sha256": "2504c511da0e97831d44acec5e0bc146daa4db09c62d6d3ce98d2902b43392f9",
+  "original_failure": "RuntimeError: AIME evaluator row order/content mismatch at /data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/aflow_attempt_v2/aflow_maas/aflow/seed_0/aflow_test/aime_2025_Q row 0",
+  "original_runner_sha256": "eecfb8199e9d0272db60899dde240a28cff88e550f3319fd40e92e38a279a162",
+  "original_status": "failed",
+  "random_state_policy": "stage_reseed_seed0; original_rng_state_unavailable; not_exact_process_resume",
+  "recovery_source_commit": "d29bc67a09dbf10e39a6fab4d77ec2417b3c1eb6",
+  "remaining_test_split": "aime_2026.jsonl",
+  "reused_2025": {
+    "accuracy": 0.6333333333333333,
+    "answer_parser": "answer_protocol_v4.extract_aime_answer",
+    "avg_cost": null,
+    "calls": null,
+    "completion_tokens": null,
+    "correct": 19,
+    "cost_unit": "model_tokens",
+    "mean_score_0_1_2": 1.5666666666666667,
+    "num_examples": 30,
+    "output_audit": {
+      "csv": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/aflow_attempt_v2/aflow_maas/aflow/seed_0/aflow_test/aime_2025_Q/0.63333_20261011_030731.csv",
+      "csv_rows": 30,
+      "empty_predictions": 0,
+      "failure_fraction": 0.06666666666666667,
+      "failure_markers": [
+        "AFlow sample timeout",
+        "AFlow sample timeout"
+      ],
+      "failure_predictions": 2,
+      "sample_timeouts": 2
+    },
+    "prompt_tokens": null,
+    "resource_audit_status": "UNKNOWN_HISTORICAL",
+    "resource_usage": {
+      "calls": null,
+      "completion_tokens": null,
+      "failed_calls": null,
+      "prompt_tokens": null,
+      "total_tokens": null
+    },
+    "reused_without_model_requests": true,
+    "rows": [
+      {
+        "correct": true,
+        "gold": "70",
+        "id": "aime_2025:1",
+        "parser_valid": true,
+        "prediction": "70",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "588",
+        "id": "aime_2025:2",
+        "parser_valid": true,
+        "prediction": "588",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "16",
+        "id": "aime_2025:3",
+        "parser_valid": true,
+        "prediction": "16",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "117",
+        "id": "aime_2025:4",
+        "parser_valid": true,
+        "prediction": "117",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "279",
+        "id": "aime_2025:5",
+        "parser_valid": true,
+        "prediction": "279",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "504",
+        "id": "aime_2025:6",
+        "parser_valid": true,
+        "prediction": "504",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": false,
+        "gold": "821",
+        "id": "aime_2025:7",
+        "parser_valid": true,
+        "prediction": "79",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": true,
+        "gold": "77",
+        "id": "aime_2025:8",
+        "parser_valid": true,
+        "prediction": "77",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": false,
+        "gold": "62",
+        "id": "aime_2025:9",
+        "parser_valid": false,
+        "prediction": "",
+        "score": 0.0,
+        "score_0_1_2": 0
+      },
+      {
+        "correct": false,
+        "gold": "81",
+        "id": "aime_2025:10",
+        "parser_valid": true,
+        "prediction": "70",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": false,
+        "gold": "259",
+        "id": "aime_2025:11",
+        "parser_valid": true,
+        "prediction": "36",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": true,
+        "gold": "510",
+        "id": "aime_2025:12",
+        "parser_valid": true,
+        "prediction": "510",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": false,
+        "gold": "204",
+        "id": "aime_2025:13",
+        "parser_valid": true,
+        "prediction": "162",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": false,
+        "gold": "60",
+        "id": "aime_2025:14",
+        "parser_valid": true,
+        "prediction": "63",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": false,
+        "gold": "735",
+        "id": "aime_2025:15",
+        "parser_valid": true,
+        "prediction": "903",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": true,
+        "gold": "468",
+        "id": "aime_2025:16",
+        "parser_valid": true,
+        "prediction": "468",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "49",
+        "id": "aime_2025:17",
+        "parser_valid": true,
+        "prediction": "49",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "82",
+        "id": "aime_2025:18",
+        "parser_valid": true,
+        "prediction": "82",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "106",
+        "id": "aime_2025:19",
+        "parser_valid": true,
+        "prediction": "106",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "336",
+        "id": "aime_2025:20",
+        "parser_valid": true,
+        "prediction": "336",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "293",
+        "id": "aime_2025:21",
+        "parser_valid": true,
+        "prediction": "293",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "237",
+        "id": "aime_2025:22",
+        "parser_valid": true,
+        "prediction": "237",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "610",
+        "id": "aime_2025:23",
+        "parser_valid": true,
+        "prediction": "610",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "149",
+        "id": "aime_2025:24",
+        "parser_valid": true,
+        "prediction": "149",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": false,
+        "gold": "907",
+        "id": "aime_2025:25",
+        "parser_valid": true,
+        "prediction": "346",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": true,
+        "gold": "113",
+        "id": "aime_2025:26",
+        "parser_valid": true,
+        "prediction": "113",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": true,
+        "gold": "19",
+        "id": "aime_2025:27",
+        "parser_valid": true,
+        "prediction": "19",
+        "score": 1.0,
+        "score_0_1_2": 2
+      },
+      {
+        "correct": false,
+        "gold": "248",
+        "id": "aime_2025:28",
+        "parser_valid": false,
+        "prediction": "",
+        "score": 0.0,
+        "score_0_1_2": 0
+      },
+      {
+        "correct": false,
+        "gold": "104",
+        "id": "aime_2025:29",
+        "parser_valid": true,
+        "prediction": "107",
+        "score": 0.0,
+        "score_0_1_2": 1
+      },
+      {
+        "correct": false,
+        "gold": "240",
+        "id": "aime_2025:30",
+        "parser_valid": true,
+        "prediction": "204",
+        "score": 0.0,
+        "score_0_1_2": 1
+      }
+    ],
+    "sample_gate_pass": false,
+    "score": 0.6333333333333333,
+    "score_0_1_2": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      1,
+      2,
+      0,
+      1,
+      1,
+      2,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      1,
+      2,
+      2,
+      0,
+      1,
+      1
+    ],
+    "total_cost": null,
+    "total_tokens": null,
+    "valid_answer_rate": 0.9333333333333333
+  },
+  "run_dir": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/outputs/aime_stage_recovery_seed0_20261011/aflow/seed_0",
+  "run_session_record": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/recovery_aflow_20261011/run_session.json",
+  "runner_sha256": "484d448bcdc65450f61947d45f4a42f53326e4224b622cda8dfd70e745233351",
+  "schema": "aime_stage_recovery_inspection_v1",
+  "source_artifacts_sha256": {
+    "aflow_repo/data/datasets/math_test.jsonl": "c1bf5d41d82abe84bef24322761c3c3596fc617e65c8c04535833425eade9f75",
+    "aflow_repo/workspace/rpas_aime_native/MATH/workflows/round_9/graph.py": "3e7bc938534c5a36f0d3e4887b5d429a6537bcd7db002c6201151f6864e0f9fd",
+    "aflow_repo/workspace/rpas_aime_native/MATH/workflows/round_9/prompt.py": "5d74b7c55a0400237210731089aad3ef00243a45aeb2d68ffb026fa4ed1359b9",
+    "aflow_test/aime_2025_Q/0.63333_20261011_030731.csv": "1d43c959a0c7c828f55760007df8f61fd3a7a79d12b9b5d3fa9c06a6c02abc7f",
+    "dtest_access_manifest.json": "a1b071eac1cb9a62df88acf67f8d825f3794f496c280d5cfe681430290733ad5",
+    "run_manifest.json": "ae5e164bcdf9f99fb0af827cf93a3fd8be749d4d20799ca0a8e3dc23b1d7879f",
+    "selection_audit.json": "2576b9fece5871c536b67e11d48877827410f1607b6675768c70a4654781c51d",
+    "selection_frozen.json": "04ee8eafe883a6a54b4b2177badfdf4f1a091ddce510c6749019e1d856ab0e4e",
+    "split_manifest.json": "07359b1c95c882a476be24e7673ea3014a6cb5f4f51793697c2e3dfdfbdc80a2"
+  },
+  "source_repo_python_sha256": "62f518209f1311e7b8cd9de690825c1c82ae3603030e05a5b4ea268b33934614",
+  "source_run": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/aflow_attempt_v2/aflow_maas/aflow/seed_0",
+  "source_verified_unchanged_after_run": true,
+  "stage_reseed_authorized": false,
+  "started_at_utc": "2026-10-11T05:25:18.749439+00:00",
+  "status": "completed_supplementary"
+}

@@ -1,0 +1,48 @@
+{
+  "bundle_schema": "aime_four_methods_results_bundle_v1",
+  "date": "2026-10-12",
+  "seed": 0,
+  "model": "Qwen/Qwen3.5-9B",
+  "methods": {
+    "aflow": {
+      "status": "supplementary_completed",
+      "formal_acceptance": "NOT_FORMAL_PASS",
+      "aime_2025_correct": 19,
+      "aime_2025_total": 30,
+      "aime_2026_correct": 25,
+      "aime_2026_total": 30,
+      "variant": "stage recovery; historical usage incomplete; original 2025 gate failure retained"
+    },
+    "maas": {
+      "status": "supplementary_completed",
+      "formal_acceptance": "NOT_FORMAL_PASS",
+      "aime_2025_correct": 15,
+      "aime_2025_total": 30,
+      "aime_2026_correct": 20,
+      "aime_2026_total": 30,
+      "variant": "stage reseed seed0; original RNG unavailable; historical usage incomplete"
+    },
+    "gdesigner": {
+      "status": "supplementary_completed",
+      "formal_acceptance": "NOT_FORMAL_PASS",
+      "aime_2025_correct": 19,
+      "aime_2025_total": 30,
+      "aime_2026_correct": 21,
+      "aime_2026_total": 30,
+      "variant": "selection/test quality-gate waiver; stage reseed; original RNG/node IDs unavailable"
+    },
+    "adas": {
+      "status": "failed_before_dtest",
+      "formal_acceptance": "NOT_FORMAL_PASS",
+      "d_select_best_correct": 21,
+      "d_select_total": 30,
+      "d_select_best_failure_fraction": 0.16666666666666666,
+      "d_select_best_truncation_fraction": 0.12885154061624648,
+      "variant": "original 5% selection gate retained; no D_test opened"
+    }
+  },
+  "publication_scope": {
+    "included": "audits, manifests, raw scored rows/CSVs, durable ledgers, selected checkpoints/candidate files, launch provenance and ADAS failure archive",
+    "excluded": "model/tokenizer/embedding weights, upstream source checkouts, Python caches, temporary GPU/server logs, local credentials"
+  }
+}

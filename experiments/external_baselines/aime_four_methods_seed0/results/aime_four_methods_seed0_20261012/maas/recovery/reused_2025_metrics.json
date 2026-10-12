@@ -1,0 +1,341 @@
+{
+  "accuracy": 0.5,
+  "answer_parser": "answer_protocol_v4.extract_aime_answer",
+  "avg_cost": null,
+  "calls": null,
+  "completion_tokens": null,
+  "correct": 15,
+  "cost_unit": "model_tokens",
+  "mean_score_0_1_2": 1.1666666666666667,
+  "num_examples": 30,
+  "output_audit": {
+    "csv": "/data/jxc/RPAS-AIME-FourMethods-Seed0-v3-16k/outputs/aime_finalv3_detached_seed0_20261010_recovery/aflow_maas/maas/seed_0/maas_repo/workspace/rpas_aime_native/MATH/test/round_1/0.50000_20261011_010944.csv",
+    "csv_rows": 30,
+    "empty_predictions": 1,
+    "failure_fraction": 0.03333333333333333,
+    "failure_markers": [
+      "<empty prediction>"
+    ],
+    "failure_predictions": 1,
+    "sample_timeouts": 0
+  },
+  "prompt_tokens": null,
+  "resource_audit_status": "UNKNOWN_HISTORICAL",
+  "resource_usage": {
+    "calls": null,
+    "completion_tokens": null,
+    "failed_calls": null,
+    "prompt_tokens": null,
+    "total_tokens": null
+  },
+  "reused_without_model_requests": true,
+  "rows": [
+    {
+      "correct": true,
+      "gold": "70",
+      "id": "aime_2025:1",
+      "parser_valid": true,
+      "prediction": "70",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": true,
+      "gold": "588",
+      "id": "aime_2025:2",
+      "parser_valid": true,
+      "prediction": "588",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": true,
+      "gold": "16",
+      "id": "aime_2025:3",
+      "parser_valid": true,
+      "prediction": "16",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": true,
+      "gold": "117",
+      "id": "aime_2025:4",
+      "parser_valid": true,
+      "prediction": "117",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": true,
+      "gold": "279",
+      "id": "aime_2025:5",
+      "parser_valid": true,
+      "prediction": "279",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": true,
+      "gold": "504",
+      "id": "aime_2025:6",
+      "parser_valid": true,
+      "prediction": "504",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": false,
+      "gold": "821",
+      "id": "aime_2025:7",
+      "parser_valid": false,
+      "prediction": "",
+      "score": 0.0,
+      "score_0_1_2": 0
+    },
+    {
+      "correct": true,
+      "gold": "77",
+      "id": "aime_2025:8",
+      "parser_valid": true,
+      "prediction": "77",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": false,
+      "gold": "62",
+      "id": "aime_2025:9",
+      "parser_valid": false,
+      "prediction": "",
+      "score": 0.0,
+      "score_0_1_2": 0
+    },
+    {
+      "correct": false,
+      "gold": "81",
+      "id": "aime_2025:10",
+      "parser_valid": false,
+      "prediction": "",
+      "score": 0.0,
+      "score_0_1_2": 0
+    },
+    {
+      "correct": false,
+      "gold": "259",
+      "id": "aime_2025:11",
+      "parser_valid": false,
+      "prediction": "",
+      "score": 0.0,
+      "score_0_1_2": 0
+    },
+    {
+      "correct": true,
+      "gold": "510",
+      "id": "aime_2025:12",
+      "parser_valid": true,
+      "prediction": "510",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": false,
+      "gold": "204",
+      "id": "aime_2025:13",
+      "parser_valid": false,
+      "prediction": "",
+      "score": 0.0,
+      "score_0_1_2": 0
+    },
+    {
+      "correct": false,
+      "gold": "60",
+      "id": "aime_2025:14",
+      "parser_valid": false,
+      "prediction": "",
+      "score": 0.0,
+      "score_0_1_2": 0
+    },
+    {
+      "correct": false,
+      "gold": "735",
+      "id": "aime_2025:15",
+      "parser_valid": false,
+      "prediction": "",
+      "score": 0.0,
+      "score_0_1_2": 0
+    },
+    {
+      "correct": true,
+      "gold": "468",
+      "id": "aime_2025:16",
+      "parser_valid": true,
+      "prediction": "468",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": true,
+      "gold": "49",
+      "id": "aime_2025:17",
+      "parser_valid": true,
+      "prediction": "49",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": true,
+      "gold": "82",
+      "id": "aime_2025:18",
+      "parser_valid": true,
+      "prediction": "82",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": false,
+      "gold": "106",
+      "id": "aime_2025:19",
+      "parser_valid": true,
+      "prediction": "215",
+      "score": 0.0,
+      "score_0_1_2": 1
+    },
+    {
+      "correct": false,
+      "gold": "336",
+      "id": "aime_2025:20",
+      "parser_valid": false,
+      "prediction": "",
+      "score": 0.0,
+      "score_0_1_2": 0
+    },
+    {
+      "correct": false,
+      "gold": "293",
+      "id": "aime_2025:21",
+      "parser_valid": true,
+      "prediction": "593",
+      "score": 0.0,
+      "score_0_1_2": 1
+    },
+    {
+      "correct": true,
+      "gold": "237",
+      "id": "aime_2025:22",
+      "parser_valid": true,
+      "prediction": "237",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": false,
+      "gold": "610",
+      "id": "aime_2025:23",
+      "parser_valid": true,
+      "prediction": "600",
+      "score": 0.0,
+      "score_0_1_2": 1
+    },
+    {
+      "correct": true,
+      "gold": "149",
+      "id": "aime_2025:24",
+      "parser_valid": true,
+      "prediction": "149",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": false,
+      "gold": "907",
+      "id": "aime_2025:25",
+      "parser_valid": true,
+      "prediction": "513",
+      "score": 0.0,
+      "score_0_1_2": 1
+    },
+    {
+      "correct": false,
+      "gold": "113",
+      "id": "aime_2025:26",
+      "parser_valid": true,
+      "prediction": "4208",
+      "score": 0.0,
+      "score_0_1_2": 1
+    },
+    {
+      "correct": true,
+      "gold": "19",
+      "id": "aime_2025:27",
+      "parser_valid": true,
+      "prediction": "19",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": false,
+      "gold": "248",
+      "id": "aime_2025:28",
+      "parser_valid": false,
+      "prediction": "",
+      "score": 0.0,
+      "score_0_1_2": 0
+    },
+    {
+      "correct": true,
+      "gold": "104",
+      "id": "aime_2025:29",
+      "parser_valid": true,
+      "prediction": "104",
+      "score": 1.0,
+      "score_0_1_2": 2
+    },
+    {
+      "correct": false,
+      "gold": "240",
+      "id": "aime_2025:30",
+      "parser_valid": false,
+      "prediction": "",
+      "score": 0.0,
+      "score_0_1_2": 0
+    }
+  ],
+  "sample_gate_pass": true,
+  "score": 0.5,
+  "score_0_1_2": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    0,
+    2,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    2,
+    2,
+    2,
+    1,
+    0,
+    1,
+    2,
+    1,
+    2,
+    1,
+    1,
+    2,
+    0,
+    2,
+    0
+  ],
+  "total_cost": null,
+  "total_tokens": null,
+  "valid_answer_rate": 0.6666666666666666
+}

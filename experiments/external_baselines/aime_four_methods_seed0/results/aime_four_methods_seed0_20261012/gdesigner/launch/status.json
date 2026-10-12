@@ -1,0 +1,121 @@
+{
+  "schema": "aime_supplemental_recovery_completion_v1",
+  "status": "supplemental_completed",
+  "classification": "supplemental",
+  "formal_status": "NOT_FORMAL_PASS",
+  "started_at_utc": "2026-10-11T16:07:49.344735+00:00",
+  "methods": {
+    "gdesigner": {
+      "source_run": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/gdesigner_attempt/adas_gdesigner/gdesigner/seed_0",
+      "run_dir": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/outputs/gdesigner_stage_recovery_seed0_20261012/gdesigner/seed_0",
+      "inspect_exit_code": 0,
+      "status": "supplemental_completed",
+      "started_at_utc": "2026-10-11T16:08:57.742452+00:00",
+      "formal_status": "NOT_FORMAL_PASS",
+      "worker_identity": {
+        "pid": 4067407,
+        "starttime_ticks": 149981799,
+        "session": 4067407,
+        "state": "R",
+        "cmdline": "/home/ZZD/.local/bin/uv run --no-project --python /data/jxc/envs/rpas-aime-gdesigner/bin/python python -u /data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/experiments/recover_gdesigner_tests.py --method gdesigner --source-run /data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/gdesigner_attempt/adas_gdesigner/gdesigner/seed_0 --run-dir /data/jxc/RPAS-AIME-Recovery-Seed0-20261011/outputs/gdesigner_stage_recovery_seed0_20261012/gdesigner/seed_0 --data-dir /data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/data --baseline-root /data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/upstream --endpoint http://127.0.0.1:18180/v1 --seed 0 --allow-selection-gate-waiver"
+      },
+      "compute_exit_code": 0,
+      "finished_at_utc": "2026-10-11T18:18:18.871440+00:00"
+    }
+  },
+  "stage": "complete",
+  "gpu_guard": {
+    "gpu_index": "3",
+    "gpu_uuid": "GPU-6f729481-b003-da17-bd30-9c9715cba16f",
+    "memory_used_mib": 17,
+    "memory_total_mib": 49140,
+    "compute_pids": [],
+    "checked_at_utc": "2026-10-11T16:07:49.545592+00:00"
+  },
+  "model_verification": {
+    "verification_report": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/local_model_verification_recovery_20261011.json",
+    "verification_report_sha256": "3efb15e4d9abf20d9a67441c41e83875f602d0be4238c4c7291d2530d9e645e9",
+    "manifest_sha256": "9a258051428a4c2a391a10274d372e7e28579abb5c2a39bb5fd04ba57fc9a79c",
+    "note": "Uses the pinned existing SHA verification report; file existence and sizes rechecked."
+  },
+  "gpu_guard_before_start": {
+    "gpu_index": "3",
+    "gpu_uuid": "GPU-6f729481-b003-da17-bd30-9c9715cba16f",
+    "memory_used_mib": 17,
+    "memory_total_mib": 49140,
+    "compute_pids": [],
+    "checked_at_utc": "2026-10-11T16:08:06.279123+00:00"
+  },
+  "server_identity": {
+    "pid": 3458172,
+    "starttime_ticks": 149976648,
+    "session": 3458172,
+    "state": "R",
+    "cmdline": "/data/jxc/envs/rpas-serve/bin/python /data/jxc/envs/rpas-serve/bin/vllm serve /data/jxc/models/Qwen3.5-9B --served-model-name Qwen/Qwen3.5-9B --host 127.0.0.1 --port 18180 --tensor-parallel-size 1 --dtype bfloat16 --max-model-len 16384 --max-num-seqs 8 --max-num-batched-tokens 16384 --gpu-memory-utilization 0.92 --enable-prefix-caching --reasoning-parser qwen3 --language-model-only"
+  },
+  "gpu_monitor_identity": {
+    "pid": 3458231,
+    "starttime_ticks": 149976648,
+    "session": 3458231,
+    "state": "R",
+    "cmdline": "nvidia-smi --id 3 --query-gpu=timestamp,index,memory.used,utilization.gpu --format=csv -lms 1000"
+  },
+  "server_command": [
+    "/data/jxc/envs/rpas-serve/bin/vllm",
+    "serve",
+    "/data/jxc/models/Qwen3.5-9B",
+    "--served-model-name",
+    "Qwen/Qwen3.5-9B",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18180",
+    "--tensor-parallel-size",
+    "1",
+    "--dtype",
+    "bfloat16",
+    "--max-model-len",
+    "16384",
+    "--max-num-seqs",
+    "8",
+    "--max-num-batched-tokens",
+    "16384",
+    "--gpu-memory-utilization",
+    "0.92",
+    "--enable-prefix-caching",
+    "--reasoning-parser",
+    "qwen3",
+    "--language-model-only"
+  ],
+  "service_environment": {
+    "CUDA_VISIBLE_DEVICES": "3",
+    "AIME_MAX_MODEL_LEN": "16384",
+    "AIME_MAX_NUM_SEQS": "8",
+    "AIME_MAX_NUM_BATCHED_TOKENS": "16384",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "HF_HOME": "/data/jxc/cache/rpas_parallel_20261010/aflow/huggingface",
+    "VLLM_CACHE_ROOT": "/data/jxc/cache/rpas_parallel_20261010/aflow/vllm",
+    "TMPDIR": "/data/jxc/tmp/rpas/gdesigner_stage_recovery_20261012/temp"
+  },
+  "run_session_record": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/recovery_gdesigner_20261012/run_session.json",
+  "run_session_record_sha256": "013f600db43dc6349e8b904d2ee4a1c031647606da0226d21d37622605c30d23",
+  "endpoint_warmup": {
+    "status": "passed",
+    "timeout_s": 300,
+    "max_tokens": 16,
+    "max_retries": 0,
+    "temperature": 0,
+    "enable_thinking": false,
+    "elapsed_s": 10.338885423960164,
+    "usage": {
+      "prompt_tokens": 16,
+      "total_tokens": 18,
+      "completion_tokens": 2,
+      "prompt_tokens_details": null
+    },
+    "disposable_not_test_metric": true
+  },
+  "exit_code": 0,
+  "finished_at_utc": "2026-10-11T18:18:20.853220+00:00"
+}

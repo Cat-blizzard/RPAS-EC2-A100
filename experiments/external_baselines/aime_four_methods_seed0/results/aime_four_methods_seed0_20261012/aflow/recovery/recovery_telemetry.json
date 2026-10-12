@@ -1,0 +1,101 @@
+{
+  "calls": 71,
+  "code_execution_calls": 32,
+  "code_execution_cancellations": 0,
+  "code_execution_errors": 3,
+  "code_execution_timeouts": 0,
+  "code_executor_adapter": {
+    "bound_modules": [
+      "scripts.operators",
+      "workspace.rpas_aime_native.MATH.workflows.template.operator"
+    ],
+    "template_repairs": [
+      {
+        "patched_sha256": "c5c3398308e75b9c378ff1a794d1434958c8923a3b5fabb1d15389649afbdfc8",
+        "path": "workspace/MATH/workflows/template/operator.py",
+        "source_sha256": "c5c3398308e75b9c378ff1a794d1434958c8923a3b5fabb1d15389649afbdfc8"
+      },
+      {
+        "patched_sha256": "c5c3398308e75b9c378ff1a794d1434958c8923a3b5fabb1d15389649afbdfc8",
+        "path": "workspace/rpas_aime_native/MATH/workflows/template/operator.py",
+        "source_sha256": "c5c3398308e75b9c378ff1a794d1434958c8923a3b5fabb1d15389649afbdfc8"
+      }
+    ],
+    "timeout_s": 30.0,
+    "version": "bounded_programmer_v2_all_template_paths",
+    "workers_per_event_loop": 8
+  },
+  "completion_tokens": 234816,
+  "completion_truncated": 24,
+  "context_guard": {
+    "calls_seen": 71,
+    "compacted_calls": 0,
+    "compacted_input_tokens": 0,
+    "context_limit": 16384,
+    "events_sample": [],
+    "final_input_tokens": 202208,
+    "max_input_tokens_seen": 6993,
+    "original_input_tokens": 202208,
+    "target_input_tokens": 8192,
+    "version": "maas_context_guard_v1"
+  },
+  "failed_calls": 0,
+  "finish_reason_counts": {
+    "length": 24,
+    "stop": 46
+  },
+  "phase_totals": {
+    "search": {
+      "calls": 0,
+      "completion_tokens": 0,
+      "failed_calls": 0,
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    },
+    "select": {
+      "calls": 0,
+      "completion_tokens": 0,
+      "failed_calls": 0,
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    },
+    "test:aime_2025": {
+      "calls": 0,
+      "completion_tokens": 0,
+      "failed_calls": 0,
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    },
+    "test:aime_2026": {
+      "calls": 0,
+      "completion_tokens": 0,
+      "failed_calls": 0,
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    },
+    "test:aime_2026:Q": {
+      "calls": 71,
+      "completion_tokens": 234816,
+      "failed_calls": 0,
+      "prompt_tokens": 195495,
+      "total_tokens": 430311
+    }
+  },
+  "phase_wall_seconds": {
+    "test:aime_2026:Q": 1284.2040621861815
+  },
+  "prompt_tokens": 195495,
+  "request_ledger_audit": {
+    "calls": 71,
+    "failed_or_cancelled_calls": 1,
+    "reported_response_usage": {
+      "completion_tokens": 234816,
+      "prompt_tokens": 195495,
+      "total_tokens": 430311
+    },
+    "unknown_usage_calls": 1,
+    "usage_complete": false
+  },
+  "sample_timeouts": 1,
+  "total_tokens": 430311
+}

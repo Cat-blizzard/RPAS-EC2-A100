@@ -1,0 +1,93 @@
+{
+  "started_at_utc": "2026-10-11T16:08:46.199567+00:00",
+  "host": "ubuntu-SYS-521GE-TNRT",
+  "project_root": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0",
+  "project_git_commit": "313c7bff0be029cff85b1ac3a57c5c9621259530",
+  "project_sha256sums_sha256": "7c4ab5b9a6b52a1bbc7b4a51d29b05bd9b6a38372b7d8b000d4f3c39ecc3e547",
+  "server_pid": 3458172,
+  "gpu_monitor_pid": 3458231,
+  "server_log": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/recovery_gdesigner_20261012/server.log",
+  "gpu_log": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/recovery_gdesigner_20261012/gpu.csv",
+  "port": 18180,
+  "server_bind": "127.0.0.1",
+  "server_binary": "/data/jxc/envs/rpas-serve/bin/vllm",
+  "model_path": "/data/jxc/models/Qwen3.5-9B",
+  "model_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "embedding_path": "/data/jxc/models/all-MiniLM-L6-v2",
+  "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "model_verification_report": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/local_model_verification_recovery_20261011.json",
+  "model_verification_report_sha256": "3efb15e4d9abf20d9a67441c41e83875f602d0be4238c4c7291d2530d9e645e9",
+  "server_settings": {
+    "served_model_name": "Qwen/Qwen3.5-9B",
+    "dtype": "bfloat16",
+    "language_model_only": true,
+    "tensor_parallel_size": 1,
+    "max_model_len": 16384,
+    "max_num_seqs": 8,
+    "max_num_batched_tokens": 16384,
+    "gpu_memory_utilization": 0.92,
+    "reasoning_parser": "qwen3",
+    "enable_prefix_caching": true
+  },
+  "python_paths": {
+    "serve": "/data/jxc/envs/rpas-serve/bin/python",
+    "aflow": "/data/jxc/envs/rpas-aflow/bin/python",
+    "maas": "/data/jxc/envs/rpas-maas/bin/python",
+    "gdesigner": "/data/jxc/envs/rpas-aime-gdesigner/bin/python"
+  },
+  "package_versions": {
+    "serve": {
+      "torch": "2.10.0+cu130",
+      "transformers": "4.57.6",
+      "vllm": "0.17.0",
+      "openai": "2.24.0",
+      "numpy": "2.2.6"
+    },
+    "aflow": {
+      "torch": "2.10.0+cu130",
+      "transformers": "4.57.6",
+      "openai": "1.82.0",
+      "numpy": "2.0.2",
+      "pandas": "2.2.3"
+    },
+    "maas": {
+      "torch": "2.10.0+cu130",
+      "transformers": "4.57.6",
+      "openai": "1.82.0",
+      "sentence-transformers": "5.7.0",
+      "numpy": "1.26.4",
+      "pandas": "3.0.6"
+    },
+    "gdesigner": {
+      "torch": "2.10.0+cu130",
+      "transformers": "4.57.6",
+      "openai": "1.82.0",
+      "sentence-transformers": "5.7.0",
+      "numpy": "1.26.4",
+      "pandas": "3.0.6"
+    }
+  },
+  "pair": "supplemental_recovery",
+  "runtime_overrides": {
+    "AIME_AFLOW_REQUEST_TIMEOUT_S": "600",
+    "AIME_AFLOW_SAMPLE_TIMEOUT_S": "1200",
+    "AIME_AFLOW_CODE_TIMEOUT_S": "30",
+    "AIME_MAAS_REQUEST_TIMEOUT_S": "600",
+    "AIME_MAAS_SAMPLE_TIMEOUT_S": "1500",
+    "AIME_MAAS_SAMPLE_RETRIES": "3",
+    "AIME_MAAS_CODE_TIMEOUT_S": "60",
+    "AIME_EXTERNAL_REQUEST_TIMEOUT_S": "600"
+  },
+  "gpu": [
+    "0, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 27408 MiB, 580.178.04",
+    "1, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 27390 MiB, 580.178.04",
+    "2, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 45600 MiB, 580.178.04",
+    "3, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 43343 MiB, 580.178.04",
+    "4, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 32382 MiB, 580.178.04",
+    "5, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 32387 MiB, 580.178.04",
+    "6, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 32427 MiB, 580.178.04",
+    "7, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 32388 MiB, 580.178.04",
+    "8, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 17 MiB, 580.178.04",
+    "9, NVIDIA RTX 5880 Ada Generation, 49140 MiB, 18450 MiB, 580.178.04"
+  ]
+}

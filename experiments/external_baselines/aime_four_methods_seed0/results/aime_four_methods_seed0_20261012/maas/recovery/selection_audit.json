@@ -1,0 +1,337 @@
+{
+  "schema": "aime_fourway_selection_audit_v1",
+  "method": "maas",
+  "split": "D_select",
+  "dtest_opened": false,
+  "controller_sha256": "50cad9bce9f862af477901ac01b8bee774190a6b502f6fe2f164abf442eaec96",
+  "selection_metrics": {
+    "score": 0.7,
+    "accuracy": 0.7,
+    "correct": 21,
+    "num_examples": 30,
+    "valid_answer_rate": 0.7666666666666667,
+    "mean_score_0_1_2": 1.4666666666666666,
+    "score_0_1_2": [
+      0,
+      2,
+      2,
+      0,
+      2,
+      0,
+      2,
+      2,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      0,
+      2,
+      2,
+      2,
+      1,
+      2,
+      0,
+      0,
+      2,
+      2,
+      2,
+      0,
+      2
+    ],
+    "rows": [
+      {
+        "prediction": "",
+        "gold": "150",
+        "parser_valid": false,
+        "correct": false,
+        "score": 0.0,
+        "score_0_1_2": 0,
+        "id": "validation:aime:aimo_validation:2:content:a3c56ccf1c73bf4d"
+      },
+      {
+        "prediction": "112",
+        "gold": "112",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:24:content:e5b025312c708594"
+      },
+      {
+        "prediction": "235",
+        "gold": "235",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:32:content:9073d6cfb1f4de63"
+      },
+      {
+        "prediction": "",
+        "gold": "75",
+        "parser_valid": false,
+        "correct": false,
+        "score": 0.0,
+        "score_0_1_2": 0,
+        "id": "validation:aime:aimo_validation:33:content:f74cee89efff5b36"
+      },
+      {
+        "prediction": "242",
+        "gold": "242",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:8:content:0d994c52d72cf5f1"
+      },
+      {
+        "prediction": "",
+        "gold": "699",
+        "parser_valid": false,
+        "correct": false,
+        "score": 0.0,
+        "score_0_1_2": 0,
+        "id": "validation:aime:aimo_validation:87:content:ba7131b092956139"
+      },
+      {
+        "prediction": "550",
+        "gold": "550",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:10:content:15cdc94d68f2c941"
+      },
+      {
+        "prediction": "113",
+        "gold": "113",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:61:content:4ce357d7dd2e720d"
+      },
+      {
+        "prediction": "36",
+        "gold": "188",
+        "parser_valid": true,
+        "correct": false,
+        "score": 0.0,
+        "score_0_1_2": 1,
+        "id": "validation:aime:aimo_validation:20:content:b747bf5e5719454c"
+      },
+      {
+        "prediction": "49",
+        "gold": "49",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:42:content:7f05c01f65666b55"
+      },
+      {
+        "prediction": "125",
+        "gold": "125",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:22:content:b583b5d14d2922ac"
+      },
+      {
+        "prediction": "220",
+        "gold": "220",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:19:content:9832a77ddafb7548"
+      },
+      {
+        "prediction": "116",
+        "gold": "116",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:0:content:db9ddd32c3cdc3cf"
+      },
+      {
+        "prediction": "881",
+        "gold": "881",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:37:content:c10dca5d4a7f8649"
+      },
+      {
+        "prediction": "204",
+        "gold": "204",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:60:content:35e2c4c227ce72c7"
+      },
+      {
+        "prediction": "23",
+        "gold": "23",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:78:content:ceef3a02134883a3"
+      },
+      {
+        "prediction": "721",
+        "gold": "721",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:66:content:b9a6fdecc3abd7cd"
+      },
+      {
+        "prediction": "",
+        "gold": "197",
+        "parser_valid": false,
+        "correct": false,
+        "score": 0.0,
+        "score_0_1_2": 0,
+        "id": "validation:aime:aimo_validation:73:content:4aafa33dfa48080a"
+      },
+      {
+        "prediction": "468",
+        "gold": "468",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:76:content:87ba3187b1f3fe15"
+      },
+      {
+        "prediction": "24",
+        "gold": "24",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:58:content:3828c70e205bafd9"
+      },
+      {
+        "prediction": "480",
+        "gold": "480",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:74:content:b389fb4c61cfcb87"
+      },
+      {
+        "prediction": "15",
+        "gold": "315",
+        "parser_valid": true,
+        "correct": false,
+        "score": 0.0,
+        "score_0_1_2": 1,
+        "id": "validation:aime:aimo_validation:81:content:2931fa19a1515689"
+      },
+      {
+        "prediction": "321",
+        "gold": "321",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:79:content:54bbf9f8907e2c08"
+      },
+      {
+        "prediction": "",
+        "gold": "608",
+        "parser_valid": false,
+        "correct": false,
+        "score": 0.0,
+        "score_0_1_2": 0,
+        "id": "validation:aime:aimo_validation:35:content:ae32a9c6423400db"
+      },
+      {
+        "prediction": "",
+        "gold": "140",
+        "parser_valid": false,
+        "correct": false,
+        "score": 0.0,
+        "score_0_1_2": 0,
+        "id": "validation:aime:aimo_validation:21:content:e65293611e925c70"
+      },
+      {
+        "prediction": "33",
+        "gold": "33",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:84:content:d1652db7853043b8"
+      },
+      {
+        "prediction": "116",
+        "gold": "116",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:69:content:ae413f4a0fc30416"
+      },
+      {
+        "prediction": "809",
+        "gold": "809",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:68:content:93cbad4b1e228adb"
+      },
+      {
+        "prediction": "",
+        "gold": "144",
+        "parser_valid": false,
+        "correct": false,
+        "score": 0.0,
+        "score_0_1_2": 0,
+        "id": "validation:aime:aimo_validation:46:content:edff946398fc45df"
+      },
+      {
+        "prediction": "21",
+        "gold": "21",
+        "parser_valid": true,
+        "correct": true,
+        "score": 1.0,
+        "score_0_1_2": 2,
+        "id": "validation:aime:aimo_validation:23:content:b7346738280db9ce"
+      }
+    ],
+    "answer_parser": "answer_protocol_v4.extract_aime_answer"
+  },
+  "output_audit": {
+    "csv": "/data/jxc/RPAS-AIME-FourMethods-Seed0-v3-16k/outputs/aime_finalv3_detached_seed0_20261010_recovery/aflow_maas/maas/seed_0/maas_repo/workspace/rpas_aime_native/MATH/test/round_1/0.70000_20261010_231816.csv",
+    "csv_rows": 30,
+    "empty_predictions": 0,
+    "failure_predictions": 0,
+    "failure_fraction": 0.0,
+    "sample_timeouts": 0,
+    "failure_markers": []
+  },
+  "resource_usage": {
+    "calls": 436,
+    "prompt_tokens": 949454,
+    "completion_tokens": 1651609,
+    "total_tokens": 2601063,
+    "failed_calls": 0
+  },
+  "failure_limit": 0.05
+}

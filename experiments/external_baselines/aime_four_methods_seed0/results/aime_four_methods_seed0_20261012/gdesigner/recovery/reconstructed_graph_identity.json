@@ -1,0 +1,32 @@
+{
+  "acceptance_status": "NOT_FORMAL_PASS",
+  "controller_sha256": "7c1e384e0cca4e92ca845fb350f228bf495e2fdcdbab9f98e2511cd2b04b0fa9",
+  "decision_node_id": "BbSJ",
+  "graph_id": "Njad",
+  "module_training_modes": {
+    "gcn": false,
+    "mlp": true
+  },
+  "node_identity_policy": "new native shortuuid IDs; historical IDs are absent from checkpoint",
+  "nodes": [
+    {
+      "id": "ELyT",
+      "role": "Algebraic Decomposer"
+    },
+    {
+      "id": "Xrpc",
+      "role": "Independent Solver"
+    },
+    {
+      "id": "ojCt",
+      "role": "Consistency Checker"
+    },
+    {
+      "id": "Ni3V",
+      "role": "Solution Synthesizer"
+    }
+  ],
+  "reused_search": true,
+  "reused_selection": true,
+  "rng_policy": "seed 0 reset at recovery stage; historical RNG state is absent from checkpoint"
+}

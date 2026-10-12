@@ -1,0 +1,100 @@
+============Generation 7=================
+During evaluation:
+'code'
+During evaluation:
+'code'
+============Generation 8=================
+============Generation 9=================
+During evaluation:
+candidate syntax error: unterminated string literal (detected at line 29) (<unknown>, line 29)
+During evaluation:
+forbidden method call: format
+During evaluation:
+candidate syntax error: unterminated string literal (detected at line 18) (<unknown>, line 18)
+============Generation 10=================
+============Generation 11=================
+During evaluation:
+forbidden attribute: name
+During evaluation:
+call target is not allowlisted: hasattr
+During evaluation:
+forbidden attribute: name
+During LLM generate new solution:
+Expecting ',' delimiter: line 3575 column 5 (char 21164)
+============Generation 12=================
+During evaluation:
+candidate syntax error: unterminated string literal (detected at line 69) (<unknown>, line 69)
+============Generation 13=================
+During evaluation:
+call target is not allowlisted: chr
+============Generation 14=================
+============Generation 15=================
+During LLM generate new solution:
+Unterminated string starting at: line 36 column 1628 (char 25871)
+============Generation 16=================
+============Generation 17=================
+During evaluation:
+call target is not allowlisted: agent
+During evaluation:
+call target is not allowlisted: Info
+During evaluation:
+forbidden attribute: name
+============Generation 18=================
+============Generation 19=================
+During LLM generate new solution:
+Expecting ',' delimiter: line 17757 column 4 (char 26705)
+============Generation 20=================
+During LLM generate new solution:
+Unterminated string starting at: line 1 column 16 (char 15)
+============Generation 21=================
+During evaluation:
+candidate syntax error: unterminated string literal (detected at line 68) (<unknown>, line 68)
+During evaluation:
+All 0 accuracy
+============Generation 22=================
+============Generation 23=================
+============Generation 24=================
+============Generation 25=================
+============Generation 26=================
+During evaluation:
+call target is not allowlisted: Info
+During LLM generate new solution:
+Unterminated string starting at: line 2 column 15 (char 16)
+During evaluation:
+call target is not allowlisted: Info
+During evaluation:
+forbidden attribute: name
+============Generation 27=================
+During evaluation:
+candidate syntax error: unterminated string literal (detected at line 78) (<unknown>, line 78)
+During evaluation:
+candidate syntax error: unmatched '}' (<unknown>, line 77)
+During evaluation:
+candidate syntax error: unmatched '}' (<unknown>, line 60)
+============Generation 28=================
+During evaluation:
+forbidden method call: format
+During evaluation:
+forbidden method call: values
+During LLM generate new solution:
+Expecting ',' delimiter: line 1 column 255704 (char 255703)
+During evaluation:
+forbidden method call: values
+============Generation 29=================
+During evaluation:
+All 0 accuracy
+============Generation 30=================
+During evaluation:
+call target is not allowlisted: hasattr
+Traceback (most recent call last):
+  File "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0/experiments/native_external_methods.py", line 1427, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0/experiments/native_external_methods.py", line 1373, in main
+    result = run_adas(args.dataset, rows, args, run_id, runtime, source) if args.method == "adas" else run_gdesigner(args.dataset, rows, args, run_id, runtime, source)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/experiments/external_baselines/aime_four_methods_seed0/experiments/native_external_methods.py", line 748, in run_adas
+    raise RuntimeError("ADAS has no valid candidate on D_select (failure rate must be <=5%).")
+RuntimeError: ADAS has no valid candidate on D_select (failure rate must be <=5%).
+FAIL method=adas preflight_exit=0 compute_exit=1 gate_exit=not_run; continuing independent methods
+AIME_METHOD_ATTEMPTS_FAILED count=1 pair=adas
