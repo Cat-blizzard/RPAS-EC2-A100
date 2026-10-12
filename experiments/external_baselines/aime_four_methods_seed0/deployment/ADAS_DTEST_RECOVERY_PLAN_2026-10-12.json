@@ -1,0 +1,24 @@
+{
+  "schema": "aime_stage_recovery_plan_v1",
+  "package_root": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0",
+  "env_file": "/data/jxc/tmp/rpas/adas_dtest_recovery_20261012/common.env",
+  "gpu": "8",
+  "port": 18183,
+  "output_root": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/outputs/adas_dtest_recovery_seed0_20261012",
+  "launch_dir": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/recovery_adas_20261012",
+  "runs": [
+    {
+      "method": "adas",
+      "source_run": "/data/jxc/RPAS-AIME-Parallel-Seed0-20261010/outputs/aime_parallel_seed0_20261010/adas_attempt_v2/adas_gdesigner/adas/seed_0",
+      "run_dir": "/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/outputs/adas_dtest_recovery_seed0_20261012/adas/seed_0",
+      "allow_selection_gate_waiver": true,
+      "adas_generations": 30
+    }
+  ],
+  "authorization": {
+    "user_message": "按照当前最佳的方案跑一下Dtest吧，然后暂时放下门槛校验",
+    "date": "2026-10-12",
+    "timezone": "Asia/Shanghai",
+    "accepted_scope": "Reuse ADAS archive_21 (21/30 D_select best candidate), skip search/select recomputation, open AIME2025 and AIME2026 D_test once after a new lock, retain all failure/truncation metrics, classify as gate-waiver stage recovery and NOT_FORMAL_PASS. Plan prepared only; not launched in this delivery."
+  }
+}

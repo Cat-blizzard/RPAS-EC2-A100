@@ -1,0 +1,17 @@
+# Copy to /data/jxc/tmp/rpas/adas_dtest_recovery_20261012/common.env on the host
+# after checking the paths and model verification report. This file is a
+# template only; it does not start a service or an ADAS worker.
+export AIME_MODEL_PATH=/data/jxc/models/Qwen3.5-9B
+export AIME_MINILM_PATH=/data/jxc/models/all-MiniLM-L6-v2
+export AIME_MODEL_VERIFICATION_REPORT=/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/logs/local_model_verification_recovery_20261011.json
+export AIME_UV_BIN=/home/ZZD/.local/bin/uv
+export AIME_PYTHON=/data/jxc/envs/rpas-serve/bin/python
+export AIME_VLLM_BIN=/data/jxc/envs/rpas-serve/bin/vllm
+export AIME_AFLOW_PYTHON=/data/jxc/envs/rpas-aflow/bin/python
+export AIME_MAAS_PYTHON=/data/jxc/envs/rpas-maas/bin/python
+export AIME_ADAS_PYTHON=/data/jxc/envs/rpas-aime-adas/bin/python
+export AIME_GDESIGNER_PYTHON=/data/jxc/envs/rpas-aime-gdesigner/bin/python
+export AIME_DATA_DIR=/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/data
+export AIME_UPSTREAM_ROOT=/data/jxc/RPAS-AIME-Recovery-Seed0-20261011/experiments/external_baselines/aime_four_methods_seed0/upstream
+export AIME_CACHE_DIR=/data/jxc/cache/rpas_adas_dtest_20261012
+export AIME_TEMP_DIR=/data/jxc/tmp/rpas/adas_dtest_recovery_20261012/temp

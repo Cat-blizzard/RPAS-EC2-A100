@@ -532,7 +532,8 @@ def _native_source(method: str, explicit: Path | None) -> Path:
 
 
 def run_adas(dataset: str, rows: dict[str, list[dict[str, Any]]], args: argparse.Namespace,
-             run_id: str, runtime: ModelRuntime, source: Path) -> dict[str, Any]:
+             run_id: str, runtime: ModelRuntime, source: Path, *,
+             test_recovery: dict[str, Any] | None = None) -> dict[str, Any]:
     """Run the official ADAS archive/reflection/debug loop through safe adapters."""
     source = source.resolve()
     mgsm_dir = source / "_mgsm"
@@ -657,6 +658,10 @@ def run_adas(dataset: str, rows: dict[str, list[dict[str, Any]]], args: argparse
             "tokens_per_example": delta_tokens / max(1, len(audit)), "rows": audit,
         }
         eval_audits.append(summary)
+        sample_callback = (test_recovery or {}).get("sample_completed")
+        if sample_callback is not None and phase_name.startswith("test:"):
+            for sample in audit:
+                sample_callback(phase_name, sample)
         if summary["failure_fraction"] > MAX_SAMPLE_FAILURE_RATE:
             # Keep native ADAS's search signal, but mark the candidate/run
             # invalid later; the optimizer must never hide sample failures.
@@ -683,6 +688,82 @@ def run_adas(dataset: str, rows: dict[str, list[dict[str, Any]]], args: argparse
         save_dir=str(native_dir), expr_name=f"{dataset}_{args.seed}",
         n_generation=args.adas_generations, debug_max=3, model=MODEL,
     )
+    if test_recovery is not None:
+        if dataset != "aime" or args.seed != 0:
+            raise ValueError("ADAS D_test recovery is authorized only for AIME seed 0")
+        archive_path = Path(test_recovery["archive_path"]).resolve()
+        archive = json.loads(archive_path.read_text(encoding="utf-8"))
+        candidate_index = int(test_recovery["candidate_index"])
+        if not 0 <= candidate_index < len(archive):
+            raise RuntimeError("authorized ADAS candidate index is outside the retained archive")
+        candidate = archive[candidate_index]
+        code = str(candidate.get("code", ""))
+        code_hash = hashlib.sha256(code.encode("utf-8")).hexdigest()
+        if not code or code_hash != test_recovery["candidate_code_sha256"]:
+            raise RuntimeError("retained ADAS best-candidate code hash differs")
+        selected = {"Q": dict(test_recovery["selection_row"]),
+                    "E": {**dict(test_recovery["selection_row"]), "same_candidate_as": "Q"}}
+        from native_aime_formal import freeze_aime_selection, load_aime_test_rows_after_freeze
+        freeze_aime_selection(
+            args.run_dir, "adas", rows["search"], rows["select"],
+            {key: {"candidate_id": item["candidate_id"], "code_sha256": item["code_sha256"],
+                   "score": float(item["score"])} for key, item in selected.items()},
+            source_provenance=args.upstream_provenance,
+        )
+        waiver = {
+            "schema": "aime_adas_quality_gate_waiver_v1", "method": "adas",
+            "selection": {"candidate_id": selected["Q"]["candidate_id"],
+                          "candidate_index": candidate_index,
+                          "observed_rates": {key: selected["Q"].get(key)
+                                             for key in ("failure_fraction", "request_failure_fraction", "truncation_fraction")},
+                          "original_threshold": MAX_SAMPLE_FAILURE_RATE, "waived": True,
+                          "authorization": "user explicitly requested D_test with gate validation temporarily waived"},
+            "test": {}, "formal_acceptance": "NOT_FORMAL_PASS",
+        }
+        write_json(args.run_dir / "gate_waiver_audit.json", waiver)
+        before_tests = test_recovery.get("before_tests")
+        if before_tests is not None:
+            before_tests({"candidate_id": selected["Q"]["candidate_id"],
+                          "candidate_index": candidate_index, "candidate_code_sha256": code_hash,
+                          "candidate_name": candidate.get("name", ""), "search_reused": True,
+                          "selection_reused": True, "seed_policy": "stage_reseed_seed0"})
+        tests: dict[str, Any] = {}
+        for split_name in ("aime_2025", "aime_2026"):
+            active_rows = load_aime_test_rows_after_freeze(
+                args.data_dir, args.run_dir, "adas", f"{split_name}.jsonl", 30
+            )
+            phase_name = f"test:{split_name}"
+            evaluate_forward_fn(native_args, code)
+            measured = eval_audits[-1]
+            point = {key: measured[key] for key in (
+                "phase", "num_examples", "correct", "accuracy", "parser_valid_rate", "mean_score_0_1_2",
+                "failure_fraction", "total_tokens", "calls", "tokens_per_example", "rows",
+                "failed_calls", "completion_truncated", "request_failure_fraction", "truncation_fraction")}
+            point.update({"operating_point": "Q", "selected_candidate": selected["Q"]["candidate_id"],
+                          "gate_audit": {"waived": True, "original_threshold": MAX_SAMPLE_FAILURE_RATE,
+                                         "observed_rates": {key: point[key] for key in
+                                                             ("failure_fraction", "request_failure_fraction", "truncation_fraction")},
+                                         "acceptance_status": "NOT_FORMAL_PASS"}})
+            point_e = {**point, "operating_point": "E", "same_candidate_as": "Q"}
+            tests[split_name] = {**point, "Q": point, "E": point_e}
+            waiver["test"][split_name] = point["gate_audit"]
+            write_json(args.run_dir / "gate_waiver_audit.json", waiver)
+            callback = test_recovery.get("checkpoint_completed")
+            if callback is not None:
+                callback(split_name, tests[split_name], runtime)
+        return {
+            "method": "adas", "search_entrypoint": "ADAS retained archive candidate (search/select reused)",
+            "native_method_config": {"safe_candidate_executor": "restricted_ast_v1", "batch_size": 30,
+                "concurrency": CONCURRENCY, "candidate_index": candidate_index},
+            "search": {"reused": True, "rows": None, "training_instances": None},
+            "selection": {"reused": True, "candidate_id": selected["Q"]["candidate_id"],
+                          "accuracy": selected["Q"]["accuracy"], "num_examples": 30},
+            "selected_Q": selected["Q"]["candidate_id"], "selected_E": selected["E"]["candidate_id"],
+            "test": tests, "telemetry": runtime.summary(),
+            "recovery_metadata": {"candidate_code_sha256": code_hash, "candidate_index": candidate_index,
+                                  "random_state_policy": "stage_reseed_seed0; original search RNG unavailable",
+                                  "gate_waiver": True, "formal_acceptance": "NOT_FORMAL_PASS"},
+        }
     phase_name = "search"
     started = time.time()
     adas.search(native_args)

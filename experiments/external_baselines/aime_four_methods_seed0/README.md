@@ -6,6 +6,13 @@ previously unopened 2025/2026 test splits. The user explicitly waived this
 method's selection/test quality thresholds. It is a stage-reseed, quality-gate
 waiver variant, remains `NOT_FORMAL_PASS`, and preserves the original rejection.
 
+The [ADAS best-candidate D_test recovery](deployment/ADAS_DTEST_RECOVERY_2026-10-12.md)
+is prepared but **not launched**. It reuses the retained `archive_21` candidate
+(21/30 on D_select), opens only AIME2025/AIME2026 after a fresh lock, and records
+the user's temporary quality-gate waiver. Its durable phase checkpoint, per-sample
+ledger, source claim, and recovery manifest are designed for an auditable stage
+restart; an interrupted request is never silently counted as a successful result.
+
 The [2026-10-11 test-stage recovery](deployment/STAGE_RECOVERY_2026-10-11.md)
 retains completed 2025 evaluations and can supplement only the unopened 2026
 test from a frozen failed AFlow/MaAS attempt. Its outputs are supplementary,
